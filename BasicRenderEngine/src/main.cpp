@@ -20,6 +20,7 @@ int main()
     context->setCurrent();
 
     auto test = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, 0, nullptr);
+    auto vao = context->getVertexArrayObject();
 
     while(!win->shouldClose())
     {

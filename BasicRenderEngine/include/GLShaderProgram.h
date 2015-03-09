@@ -10,7 +10,11 @@
 
 #include <vector>
 
-class GLShaderProgram
+#include <GL/glew.h>
+
+#include "GLExecutable.h"
+
+class GLShaderProgram : public GLExecutable
 {
 protected:
 	GLuint handle;
@@ -18,11 +22,12 @@ protected:
 public:
 	GLShaderProgram(GLuint handle_in): handle(handle_in) {}
 	virtual ~GLShaderProgram();
-};
 
-class GLShaderProgramBuilder
-{
-
+	GLuint getHandle() const noexcept
+	{
+		return handle;
+	}
+	virtual void use() noexcept override;
 };
 
 #endif /* GL_SHADER_PROGRAM_H_INCLUDED */

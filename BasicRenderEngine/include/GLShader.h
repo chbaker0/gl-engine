@@ -8,6 +8,8 @@
 #ifndef GL_SHADER_H_INCLUDED
 #define GL_SHADER_H_INCLUDED
 
+#include <GL/glew.h>
+
 class GLShader
 {
 protected:

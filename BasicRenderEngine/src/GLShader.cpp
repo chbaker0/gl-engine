@@ -9,5 +9,5 @@
 
 GLShader::~GLShader()
 {
-
+	glDeleteShader(handle);
 }
