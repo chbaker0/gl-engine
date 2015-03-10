@@ -94,6 +94,7 @@ void GLMutableBuffer::reallocate(GLsizeiptr newSize, const GLvoid *newData, GLen
 {
 	glBindBuffer(target, handle);
 	glBufferData(target, newSize, newData, newUsage);
+	size = newSize;
 }
 
 void GLMutableBuffer::invalidate() noexcept

@@ -12,6 +12,7 @@
 #include <string>
 #include <stdexcept>
 #include <utility>
+#include <iostream>
 
 #include <GL/glew.h>
 
@@ -26,7 +27,10 @@ protected:
 	std::string errorLog;
 
 public:
-	GLLinkerError(std::string errorLog_in): runtime_error("Shader program linking error"), errorLog(std::move(errorLog)) {}
+	GLLinkerError(std::string errorLog_in): runtime_error("Shader program linking error")
+	{
+		errorLog = std::move(errorLog_in);
+	}
 	const std::string& getErrorLog() const noexcept
 	{
 		return errorLog;

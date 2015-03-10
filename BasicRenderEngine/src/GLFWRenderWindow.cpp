@@ -73,6 +73,15 @@ static void windowCloseCallback(GLFWwindow *handle)
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
 
+void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, int height)
+{
+	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
+	ptr->width = width;
+	ptr->height = height;
+	if(GLRenderTarget::getCurrentTarget() == ptr)
+		glViewport(0, 0, width, height);
+}
+
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
@@ -91,7 +100,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
 
 	// Set our window hints
     glfwDefaultWindowHints();
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, glVersionMajor);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -103,6 +112,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
     handle = glfwCreateWindow(xSize, ySize, title, nullptr, nullptr);
     if(handle == nullptr)
         throw GLFWRenderWindowException("Could not create GLFW window");
+    width = xSize, height = ySize;
 
     // Set pointer to this class for callbacks
     glfwSetWindowUserPointer(handle, this);
@@ -114,6 +124,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
     glfwSetCursorEnterCallback(handle, cursorEnterCallback);
     glfwSetScrollCallback(handle, scrollCallback);
     glfwSetWindowCloseCallback(handle, windowCloseCallback);
+    glfwSetFramebufferSizeCallback(handle, framebufferResizeCallback);
 
     // Scope guard to reset context to previously current one after glew initialization
     GLFWwindow *temp = glfwGetCurrentContext();
@@ -146,6 +157,7 @@ GLFWRenderWindow::~GLFWRenderWindow()
 {
     glfwDestroyWindow(handle);
     terminate();
+    delete context;
 }
 
 GLContext* GLFWRenderWindow::getContext()
@@ -166,6 +178,8 @@ void GLFWRenderWindow::present()
 void GLFWRenderWindow::drawTo()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, width, height);
+	GLRenderTarget::currentTarget = this;
 }
 
 void GLFWRenderWindow::handleEvents()

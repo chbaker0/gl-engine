@@ -10,10 +10,18 @@
 
 class GLRenderTarget
 {
+protected:
+	static thread_local GLRenderTarget *currentTarget;
+
 public:
 	virtual ~GLRenderTarget() = 0;
 
 	virtual void drawTo() = 0;
+
+	static GLRenderTarget* getCurrentTarget() noexcept
+	{
+		return currentTarget;
+	}
 };
 
 inline GLRenderTarget::~GLRenderTarget() {}

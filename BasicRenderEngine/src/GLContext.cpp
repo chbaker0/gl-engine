@@ -37,11 +37,12 @@ std::unique_ptr<GLShaderProgram> GLContext::getStandaloneShaderProgram(GLenum ty
 	std::string errorLog(s, 0);
 	GLsizei temp;
 	glGetProgramInfoLog(handle, s, &temp, &errorLog[0]);
-	errorLog.pop_back(); // Get rid of null terminator
+	if(errorLog.size())
+		errorLog.pop_back(); // Get rid of null terminator
 	GLint status;
 	glGetProgramiv(handle, GL_LINK_STATUS, &status);
 	if(status == GL_FALSE)
-		throw GLLinkerError(errorLog);
+		throw GLLinkerError(std::move(errorLog));
 	if(errorLog_out != nullptr)
 		*errorLog_out = std::move(errorLog);
 	return std::unique_ptr<GLShaderProgram>(new GLShaderProgram(handle));

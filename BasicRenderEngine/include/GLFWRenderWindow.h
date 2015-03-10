@@ -13,6 +13,9 @@ class GLFWRenderWindow : public GLRenderWindow
 private:
     GLFWwindow *handle;
     GLFWWindowContext *context;
+    unsigned int width, height;
+
+    static void framebufferResizeCallback(GLFWwindow*, int, int);
 
 public:
     GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
@@ -20,6 +23,8 @@ public:
                      const char *title, bool debug);
     ~GLFWRenderWindow();
 
+    unsigned int getWidth() const {return width;}
+    unsigned int getHeight() const {return height;}
     bool shouldClose() const override;
     void present() override;
     void drawTo() override;
