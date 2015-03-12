@@ -9,6 +9,5 @@ out gl_PerVertex
 
 void main()
 {
-
     gl_Position = position;
 }

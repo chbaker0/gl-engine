@@ -72,10 +72,7 @@ int main()
 	}
 	catch(GLLinkerError& e)
 	{
-		for(char c : e.getErrorLog())
-		{
-			outLog.put(c);
-		}
+		outLog << e.getErrorLog();
 		return 1;
 	}
 
@@ -83,7 +80,7 @@ int main()
 	pipeline->useProgramStages(GL_VERTEX_SHADER_BIT, *vertProg);
 	pipeline->useProgramStages(GL_FRAGMENT_SHADER_BIT, *fragProg);
 
-	auto squareDrawCommand = unique_ptr<GLDrawCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 6, GL_TRIANGLES, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
+	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 6, GL_TRIANGLES, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
 
 	win->drawTo();
 	while(!win->shouldClose())
