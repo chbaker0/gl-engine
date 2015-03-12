@@ -26,6 +26,13 @@ void GLVertexArrayObject::disableAttrib(GLuint i) noexcept
 	glDisableVertexAttribArray(i);
 }
 
+void GLVertexArrayObject::setElementArrayBinding(GLBuffer& buf) noexcept
+{
+	bind();
+	buf.bindTo(GL_ELEMENT_ARRAY_BUFFER);
+	unBind();
+}
+
 void GLVertexArrayObject::bind() noexcept
 {
 	glBindVertexArray(handle);

@@ -9,6 +9,7 @@
 
 #include "GLRenderWindow.h"
 #include "GLContext.h"
+#include "GLDrawIndexedCommand.h"
 
 int main()
 {
@@ -41,6 +42,8 @@ int main()
 
     auto vao = context->getVertexArrayObject();
     vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    vao->setElementArrayBinding(*buffer);
+    vao->unBind();
 
     string vertProgSource;
     {
@@ -80,16 +83,15 @@ int main()
     pipeline->useProgramStages(GL_VERTEX_SHADER_BIT, *vertProg);
     pipeline->useProgramStages(GL_FRAGMENT_SHADER_BIT, *fragProg);
 
+    auto squareDrawCommand = unique_ptr<GLDrawCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 6, GL_TRIANGLES, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
+
     win->drawTo();
     while(!win->shouldClose())
     {
     	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    	pipeline->use();
-    	vao->bind();
-    	buffer->bindTo(GL_ELEMENT_ARRAY_BUFFER);
-    	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_SHORT, (void*)sizeof(testSquareTris));
+    	squareDrawCommand->draw();
 
 		win->present();
 		win->handleEvents();

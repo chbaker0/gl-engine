@@ -29,6 +29,7 @@ public:
 
 	void setAttrib(GLuint index, GLBuffer& buf, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *offset) noexcept;
 	void disableAttrib(GLuint i) noexcept;
+	void setElementArrayBinding(GLBuffer& buf) noexcept;
 
 	void bind() noexcept;
 	void unBind() noexcept;
