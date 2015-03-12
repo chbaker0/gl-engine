@@ -5,7 +5,6 @@
 
 #include <cstring>
 
-#include <glm/glm.hpp>
 #include <GL/glew.h>
 
 #include "GLRenderWindow.h"
