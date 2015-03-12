@@ -82,7 +82,7 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 		glViewport(0, 0, width, height);
 }
 
-static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam);
+static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
@@ -198,7 +198,7 @@ public:
 	GLPanicException(): runtime_error("Unrecoverable OpenGL error") {}
 };
 
-static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, void *userParam)
+static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
 {
 	thread_local std::string errorString;
 	errorString.clear();
