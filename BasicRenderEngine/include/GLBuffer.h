@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <GL/glew.h>
 
+#include "GLBlockBinding.h"
+
 class GLBuffer
 {
 protected:
@@ -41,6 +43,8 @@ public:
 	}
 	virtual void bind() noexcept;
 	virtual void bindTo(GLenum target) noexcept;
+	virtual void bindBase(GLUniformBlockBinding index) noexcept;
+	virtual void bindRange(GLUniformBlockBinding index, GLintptr offset, GLsizeiptr size) noexcept;
 	virtual void unBind() noexcept;
 	virtual void unBindFrom(GLenum target) noexcept;
 	virtual void invalidate() noexcept = 0;

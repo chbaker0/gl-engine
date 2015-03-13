@@ -19,6 +19,9 @@ GLBufferTargetSaver::GLBufferTargetSaver(GLenum target_in) noexcept
 	case GL_ELEMENT_ARRAY_BUFFER:
 		pname = GL_ELEMENT_ARRAY_BUFFER_BINDING;
 		break;
+	case GL_UNIFORM_BUFFER:
+		pname = GL_UNIFORM_BUFFER_BINDING;
+		break;
 	default:
 		break;
 	}
@@ -57,6 +60,14 @@ void GLBuffer::bind() noexcept
 void GLBuffer::bindTo(GLenum target) noexcept
 {
 	glBindBuffer(target, handle);
+}
+void GLBuffer::bindBase(GLUniformBlockBinding index) noexcept
+{
+	glBindBufferBase(target, (GLuint)index, handle);
+}
+void GLBuffer::bindRange(GLUniformBlockBinding index, GLintptr offset, GLsizeiptr size) noexcept
+{
+	glBindBufferRange(target, (GLuint)index, handle, offset, size);
 }
 void GLBuffer::unBind() noexcept
 {

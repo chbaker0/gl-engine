@@ -13,6 +13,13 @@
 #include <GL/glew.h>
 
 #include "GLExecutable.h"
+#include "GLBlockBinding.h"
+
+enum class GLProgramUniformBlockIndex
+{
+	GlobalBlock = 0,
+	ModelBlock
+};
 
 class GLShaderProgram : public GLExecutable
 {
@@ -28,6 +35,8 @@ public:
 		return handle;
 	}
 	virtual void use() noexcept override;
+
+	virtual void setUniformBlockBinding(GLProgramUniformBlockIndex index, GLUniformBlockBinding binding) noexcept;
 };
 
 #endif /* GL_SHADER_PROGRAM_H_INCLUDED */
