@@ -31,7 +31,7 @@ int main()
 	 0.5, -0.5, 0.0, 1.0,	// 2
 	 -0.5, -0.5, 0.0, 1.0	// 3
 	};
-	const GLushort testSquareInd[] = {0, 1, 2, 2, 3, 0};
+	const GLushort testSquareInd[] = {0, 3, 2, 2, 1, 0};
 
 	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTris) + sizeof(testSquareInd), nullptr);
 	void *raw = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
@@ -82,11 +82,14 @@ int main()
 
 	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 6, GL_TRIANGLES, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
 
+	context->faceCullingEnabled(true);
+	context->depthTestEnabled(true);
+	context->setClearColor(glm::vec4(0.0, 0.0, 1.0, 1.0));
+
 	win->drawTo();
 	while(!win->shouldClose())
 	{
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		squareDrawCommand->draw();
 

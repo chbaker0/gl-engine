@@ -54,3 +54,29 @@ std::unique_ptr<GLProgramPipeline> GLContext::getProgramPipeline()
 	glGenProgramPipelines(1, &handle);
 	return std::unique_ptr<GLProgramPipeline>(new GLProgramPipeline(handle));
 }
+
+void GLContext::setClearColor(glm::vec4 color) noexcept
+{
+	glClearColor(color.r, color.g, color.b, color.a);
+}
+
+void GLContext::clear(GLbitfield mask) noexcept
+{
+	glClear(mask);
+}
+
+void GLContext::depthTestEnabled(bool enabled) noexcept
+{
+	if(enabled)
+		glEnable(GL_DEPTH_TEST);
+	else
+		glDisable(GL_DEPTH_TEST);
+}
+
+void GLContext::faceCullingEnabled(bool enabled) noexcept
+{
+	if(enabled)
+		glEnable(GL_CULL_FACE);
+	else
+		glDisable(GL_CULL_FACE);
+}

@@ -16,6 +16,8 @@
 
 #include <GL/glew.h>
 
+#include <glm/glm.hpp>
+
 #include "GLBuffer.h"
 #include "GLVertexArrayObject.h"
 #include "GLShaderProgram.h"
@@ -49,6 +51,12 @@ public:
     virtual std::unique_ptr<GLVertexArrayObject> getVertexArrayObject();
     virtual std::unique_ptr<GLShaderProgram> getStandaloneShaderProgram(GLenum type, const std::string& source, std::string *log);
     virtual std::unique_ptr<GLProgramPipeline> getProgramPipeline();
+
+    virtual void setClearColor(glm::vec4 color) noexcept;
+    virtual void clear(GLbitfield mask) noexcept;
+
+    virtual void depthTestEnabled(bool enabled) noexcept;
+    virtual void faceCullingEnabled(bool enabled) noexcept;
 };
 
 inline GLContext::~GLContext() {}
