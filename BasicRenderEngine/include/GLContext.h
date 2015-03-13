@@ -41,8 +41,13 @@ public:
 
 class GLContext
 {
+protected:
+	static thread_local GLContext *currentContext;
+
 public:
     virtual ~GLContext() = 0;
+
+    virtual void setSwapInterval(int i) noexcept = 0;
 
     virtual void setCurrent() = 0;
     virtual void unsetCurrent() = 0;
@@ -57,6 +62,11 @@ public:
 
     virtual void depthTestEnabled(bool enabled) noexcept;
     virtual void faceCullingEnabled(bool enabled) noexcept;
+
+    static GLContext* getCurrentContext() noexcept
+	{
+    	return currentContext;
+	}
 };
 
 inline GLContext::~GLContext() {}

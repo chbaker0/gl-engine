@@ -25,6 +25,8 @@ public:
 
 	void updateHandle(GLFWwindow*) noexcept;
 
+	virtual void setSwapInterval(int i) noexcept override;
+
 	virtual void setCurrent() override;
 	virtual void unsetCurrent() override;
 };

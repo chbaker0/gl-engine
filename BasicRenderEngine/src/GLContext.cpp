@@ -9,6 +9,8 @@
 
 #include "GLContext.h"
 
+thread_local GLContext* GLContext::currentContext = nullptr;
+
 std::unique_ptr<GLMutableBuffer> GLContext::getMutableBuffer(GLenum target, GLenum usage, GLsizeiptr size, void *data)
 {
 	using std::cout; using std::endl;

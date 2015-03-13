@@ -23,6 +23,7 @@ int main()
 	std::unique_ptr<GLRenderWindow> win(creator.create());
 	GLContext *context = win->getContext();
 	context->setCurrent();
+	context->setSwapInterval(1);
 
 	const float testSquareTris[] =
 	{
