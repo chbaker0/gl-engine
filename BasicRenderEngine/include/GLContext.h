@@ -63,6 +63,8 @@ public:
     virtual void depthTestEnabled(bool enabled) noexcept;
     virtual void faceCullingEnabled(bool enabled) noexcept;
 
+    virtual unsigned int queryUniformBufferOffsetAlignment() const noexcept;
+
     static GLContext* getCurrentContext() noexcept
 	{
     	return currentContext;

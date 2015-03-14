@@ -46,9 +46,11 @@ int main()
 	memcpy(raw, testSquareInd, sizeof(testSquareInd));
 	buffer->unmap();
 
-	auto uniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 128, nullptr);
-	uniformBuffer->bindRange(GLUniformBlockBinding::GlobalBlock, 0, 64);
-	uniformBuffer->bindRange(GLUniformBlockBinding::ModelBlock, 64, 128);
+	unsigned int offsetAlignment = context->queryUniformBufferOffsetAlignment();
+	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 64, nullptr);
+	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 64, nullptr);
+	globalUniformBuffer->bindBase(GLUniformBlockBinding::GlobalBlock);
+	squareUniformBuffer->bindBase(GLUniformBlockBinding::ModelBlock);
 
 	auto vao = context->getVertexArrayObject();
 	vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, 0, 0);
@@ -112,12 +114,14 @@ int main()
 		                             glm::vec3(0.0, 0.0, 0.0),
 		                             glm::vec3(0.0, 1.0, 0.0));
 
-		glm::mat4 modelCameraMat = worldCameraMat * modelWorldMat;
-		raw = uniformBuffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
-		memcpy(raw, glm::value_ptr(modelCameraMat), sizeof(modelCameraMat));
-		raw = (char*) raw + sizeof(modelCameraMat);
+		raw = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
 		memcpy(raw, glm::value_ptr(cameraClipMat), sizeof(cameraClipMat));
-		uniformBuffer->unmap();
+		globalUniformBuffer->unmap();
+
+		glm::mat4 modelCameraMat = worldCameraMat * modelWorldMat;
+		raw = squareUniformBuffer->mapRange(0, squareUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
+		memcpy(raw, glm::value_ptr(modelCameraMat), sizeof(modelCameraMat));
+		squareUniformBuffer->unmap();
 
 		squareDrawCommand->draw();
 

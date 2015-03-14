@@ -82,3 +82,10 @@ void GLContext::faceCullingEnabled(bool enabled) noexcept
 	else
 		glDisable(GL_CULL_FACE);
 }
+
+unsigned int GLContext::queryUniformBufferOffsetAlignment() const noexcept
+{
+	GLint temp;
+	glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &temp);
+	return temp;
+}
