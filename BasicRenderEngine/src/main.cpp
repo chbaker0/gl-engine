@@ -1,6 +1,8 @@
+#include <algorithm>
 #include <fstream>
 #include <memory>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 #include <cstring>
@@ -15,6 +17,8 @@
 #include "GLRenderWindow.h"
 #include "GLContext.h"
 #include "GLDrawIndexedCommand.h"
+
+#include "Utilities.h"
 
 int main()
 {
@@ -60,25 +64,14 @@ int main()
 	vao->setElementArrayBinding(*buffer);
 	vao->unBind();
 
-	string vertProgSource;
-	{
-		ifstream vertProgFile("resources/shaders/testing/vert.glsl");
-		char c;
-		while(vertProgFile.get(c))
-			vertProgSource.push_back(c);
-	}
-	string fragProgSource;
-	{
-		ifstream fragProgFile("resources/shaders/testing/frag.glsl");
-		char c;
-		while(fragProgFile.get(c))
-			fragProgSource.push_back(c);
-	}
 	std::unique_ptr<GLShaderProgram> vertProg, fragProg;
 
 	ofstream outLog("log.txt");
 	try
 	{
+		string vertProgSource = readFile("resources/shaders/vert.glsl");
+		string fragProgSource = readFile("resources/shaders/frag.glsl");
+
 		string log;
 		vertProg = context->getStandaloneShaderProgram(GL_VERTEX_SHADER, vertProgSource, &log);
 		outLog << log << endl;
