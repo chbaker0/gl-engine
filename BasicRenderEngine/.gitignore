@@ -2,3 +2,8 @@
 /Release/
 BasicRenderEngine.trace
 RunGPUPerfStudio.bat
+/BasicRenderEngine.1.trace
+/BasicRenderEngine.lnk
+/GPU PerfStudio.lnk
+/log.txt
+/Debug profile/
