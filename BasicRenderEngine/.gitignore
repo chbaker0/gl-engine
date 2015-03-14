@@ -1,4 +1,6 @@
 /Debug/
+/Debug profile/
+/FastBuild/
 /Release/
 BasicRenderEngine.trace
 RunGPUPerfStudio.bat

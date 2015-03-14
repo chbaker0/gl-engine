@@ -108,7 +108,7 @@ int main()
 
 	glm::mat4 modelWorldMat(1.0);
 	glm::mat4 worldCameraMat;
-	glm::mat4 cameraClipMat = glm::perspective(70.0f, 800 / (float)600, 0.5f, 10.0f);
+	glm::mat4 cameraClipMat = glm::perspective(70.0f, 800 / (float)600, 0.5f, 15.0f);
 	while(!win->shouldClose())
 	{
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
