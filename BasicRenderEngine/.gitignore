@@ -9,3 +9,4 @@ RunGPUPerfStudio.bat
 /GPU PerfStudio.lnk
 /log.txt
 /Debug profile/
+/gmon.out

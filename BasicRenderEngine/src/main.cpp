@@ -69,8 +69,8 @@ int main()
 	ofstream outLog("log.txt");
 	try
 	{
-		string vertProgSource = readFile("resources/shaders/vert.glsl");
-		string fragProgSource = readFile("resources/shaders/frag.glsl");
+		string vertProgSource = readFile("resources/shaders/testing/vert.glsl");
+		string fragProgSource = readFile("resources/shaders/testing/frag.glsl");
 
 		string log;
 		vertProg = context->getStandaloneShaderProgram(GL_VERTEX_SHADER, vertProgSource, &log);
@@ -91,7 +91,7 @@ int main()
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::GlobalBlock, GLUniformBlockBinding::GlobalBlock);
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::ModelBlock, GLUniformBlockBinding::ModelBlock);
 
-	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 6, GL_TRIANGLE_FAN, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
+	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 4, GL_TRIANGLE_FAN, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
 
 	context->faceCullingEnabled(true);
 	context->depthTestEnabled(true);
