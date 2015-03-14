@@ -28,8 +28,10 @@ int main()
 	std::unique_ptr<GLRenderWindow> win(creator.create());
 	GLContext *context = win->getContext();
 	context->setCurrent();
+	// Enable vsync (hopefully)
 	context->setSwapInterval(1);
 
+	// Vertices for a square specified clockwise from top left
 	const float testSquareTris[] =
 	{
 	 -0.5, 0.5, 0.0, 1.0,	// 0
@@ -37,8 +39,10 @@ int main()
 	 0.5, -0.5, 0.0, 1.0,	// 2
 	 -0.5, -0.5, 0.0, 1.0	// 3
 	};
+	// Triangle fan indices for square, CCW
 	const GLushort testSquareInd[] = {0, 3, 2, 1};
 
+	// Load square vertices and indices into buffer
 	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTris) + sizeof(testSquareInd), nullptr);
 	void *raw = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
 	memcpy(raw, testSquareTris, sizeof(testSquareTris));
@@ -46,7 +50,6 @@ int main()
 	memcpy(raw, testSquareInd, sizeof(testSquareInd));
 	buffer->unmap();
 
-	unsigned int offsetAlignment = context->queryUniformBufferOffsetAlignment();
 	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 64, nullptr);
 	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 64, nullptr);
 	globalUniformBuffer->bindBase(GLUniformBlockBinding::GlobalBlock);
