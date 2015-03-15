@@ -14,8 +14,12 @@ GLProgramPipeline::~GLProgramPipeline()
 
 void GLProgramPipeline::use() noexcept
 {
-	glUseProgram(0);
-	glBindProgramPipeline(handle);
+	if(activeExecutable != this)
+	{
+		glUseProgram(0);
+		glBindProgramPipeline(handle);
+		activeExecutable = this;
+	}
 }
 
 void GLProgramPipeline::useProgramStages(GLbitfield stages, GLShaderProgram& prog) noexcept

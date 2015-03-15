@@ -10,10 +10,18 @@
 
 class GLExecutable
 {
+protected:
+	static thread_local GLExecutable *activeExecutable;
+
 public:
 	virtual ~GLExecutable() = 0;
 
 	virtual void use() noexcept = 0;
+
+	static GLExecutable *getActiveExecutable() noexcept
+	{
+		return activeExecutable;
+	}
 };
 
 inline GLExecutable::~GLExecutable() {}
