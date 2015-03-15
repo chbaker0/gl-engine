@@ -7,6 +7,8 @@
 #include "GLFWRenderWindow.h"
 #include "GLFWWindowContext.h"
 
+#include "Messaging/MessageTypes.h"
+
 class GLFWRenderWindowException : public GLRenderWindowException
 {
 private:
@@ -38,7 +40,7 @@ static void terminate()
     }
 }
 
-static void keyCallback(GLFWwindow *handle, int key, int scancode, int action, int mods)
+void GLFWRenderWindow::keyCallback(GLFWwindow *handle, int key, int scancode, int action, int mods)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 
@@ -48,27 +50,27 @@ static void keyCallback(GLFWwindow *handle, int key, int scancode, int action, i
 	}
 }
 
-static void cursorPosCallback(GLFWwindow *handle, double xpos, double ypos)
+void GLFWRenderWindow::cursorPosCallback(GLFWwindow *handle, double xpos, double ypos)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
 
-static void cursorEnterCallback(GLFWwindow *handle, int entered)
+void GLFWRenderWindow::cursorEnterCallback(GLFWwindow *handle, int entered)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
 
-static void mouseButtonCallback(GLFWwindow *handle, int button, int action, int mods)
+void GLFWRenderWindow::mouseButtonCallback(GLFWwindow *handle, int button, int action, int mods)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
 
-static void scrollCallback(GLFWwindow *handle, double xoffset, double yoffset)
+void GLFWRenderWindow::scrollCallback(GLFWwindow *handle, double xoffset, double yoffset)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
 
-static void windowCloseCallback(GLFWwindow *handle)
+void GLFWRenderWindow::windowCloseCallback(GLFWwindow *handle)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 }
@@ -80,6 +82,8 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 	ptr->height = height;
 	if(GLRenderTarget::getCurrentTarget() == ptr)
 		glViewport(0, 0, width, height);
+
+	ptr->messageQueue.push_back(Message(MessageType::Window_Resized, ptr));
 }
 
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
@@ -185,6 +189,14 @@ void GLFWRenderWindow::drawTo()
 void GLFWRenderWindow::handleEvents()
 {
 	glfwPollEvents();
+	for(Message m : messageQueue)
+	{
+		for(Listener *l : listeners)
+		{
+			l->acceptMessage(m);
+		}
+	}
+	messageQueue.clear();
 }
 
 double GLFWRenderWindow::getTime() const

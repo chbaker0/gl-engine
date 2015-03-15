@@ -8,13 +8,17 @@
 #include "GLContext.h"
 #include "GLRenderTarget.h"
 
+#include "Messaging/Subject.h"
+
 class GLRenderWindowException : public std::exception {};
 
-class GLRenderWindow : public GLRenderTarget
+class GLRenderWindow : public GLRenderTarget, public Subject
 {
 public:
     virtual ~GLRenderWindow() = 0;
 
+    virtual unsigned int getWidth() const noexcept = 0;
+    virtual unsigned int getHeight() const noexcept = 0;
     virtual bool shouldClose() const = 0;
     virtual void present() = 0;
     virtual void handleEvents() = 0;

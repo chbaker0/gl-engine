@@ -20,6 +20,9 @@
 
 #include "Utilities.h"
 
+#include "Messaging/Listener.h"
+#include "Messaging/MessageTypes.h"
+
 int main()
 {
 	using namespace std;
@@ -34,6 +37,19 @@ int main()
 	context->setCurrent();
 	// Enable vsync (hopefully)
 	context->setSwapInterval(1);
+
+	struct ListenerTest : public Listener
+	{
+		virtual void acceptMessage(Message &m) override
+		{
+			if(m.getType() == MessageType::Window_Resized)
+			{
+				GLRenderWindow *win = static_cast<GLRenderWindow*>(m.getSubject());
+				cout << "Window resized: new size " << win->getWidth() << "x" << win->getHeight() << endl;
+			}
+		}
+	} listenerTest;
+	win->registerListener(&listenerTest);
 
 	// Vertices for a square specified clockwise from top left
 	const float testSquareTris[] =
