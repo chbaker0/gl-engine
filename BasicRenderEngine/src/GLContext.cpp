@@ -98,7 +98,7 @@ void GLContext::useVao(GLVertexArrayObject *vao) noexcept
 	}
 }
 
-void GLContext::setRenderTarget(GLRenderTarget *rt) noexcept
+void GLContext::useRenderTarget(GLRenderTarget *rt) noexcept
 {
 	if(rt != pimpl->currentRenderTarget)
 	{

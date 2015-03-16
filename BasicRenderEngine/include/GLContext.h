@@ -64,7 +64,7 @@ public:
 
     virtual void useExecutable(GLExecutable *s) noexcept;
     virtual void useVao(GLVertexArrayObject *vao) noexcept;
-    virtual void setRenderTarget(GLRenderTarget *rt) noexcept;
+    virtual void useRenderTarget(GLRenderTarget *rt) noexcept;
 
     virtual GLExecutable* getCurrentExecutable() noexcept;
     virtual GLVertexArrayObject* getCurrentVao() noexcept;

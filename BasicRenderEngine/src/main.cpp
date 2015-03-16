@@ -112,7 +112,7 @@ int main()
 	context->depthTestEnabled(true);
 	context->setClearColor(glm::vec4(0.0, 0.0, 1.0, 1.0));
 
-	win->drawTo();
+	context->useRenderTarget(win.get());
 
 	glm::mat4 modelWorldMat(1.0);
 	glm::mat4 worldCameraMat;
