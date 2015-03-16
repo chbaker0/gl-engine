@@ -6,10 +6,11 @@
  */
 
 #include "GLDrawIndexedCommand.h"
+#include "GLContext.h"
 
-void GLDrawIndexedCommand::draw()
+void GLDrawIndexedCommand::draw(GLContext *context)
 {
-	shaderExe->use();
-	vao->bind();
+	context->useExecutable(shaderExe);
+	context->useVao(vao);
 	glDrawElements(primType, elementCount, indexType, indexOffset);
 }

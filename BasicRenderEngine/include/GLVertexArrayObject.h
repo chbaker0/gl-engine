@@ -35,4 +35,14 @@ public:
 	void unBind() noexcept;
 };
 
+class GLVertexArrayObjectSaver
+{
+protected:
+	GLuint handle;
+
+public:
+	GLVertexArrayObjectSaver();
+	~GLVertexArrayObjectSaver();
+};
+
 #endif /* GL_VERTEX_ARRAY_OBJECT_INCLUDED */

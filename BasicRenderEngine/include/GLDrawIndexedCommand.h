@@ -19,7 +19,7 @@ protected:
 public:
 	GLDrawIndexedCommand(GLVertexArrayObject *vao_in, GLExecutable *shaderExe_in, GLsizei elementCount_in, GLenum primType_in, const void *indexOffset_in, GLenum indexType_in):
 		GLDrawCommand(vao_in, shaderExe_in, elementCount_in, primType_in), indexOffset(indexOffset_in), indexType(indexType_in) {}
-	virtual void draw() override;
+	virtual void draw(GLContext *context) override;
 };
 
 #endif /* GL_DRAW_INDEXED_COMMAND */

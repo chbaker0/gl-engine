@@ -11,6 +11,18 @@
 
 thread_local GLContext* GLContext::currentContext = nullptr;
 
+struct GLContext::Pimpl
+{
+	GLExecutable *currentExecutable;
+	GLVertexArrayObject *currentVao;
+	GLRenderTarget *currentRenderTarget;
+};
+
+GLContext::GLContext()
+{
+	pimpl = new Pimpl{nullptr, nullptr};
+}
+
 std::unique_ptr<GLMutableBuffer> GLContext::getMutableBuffer(GLenum target, GLenum usage, GLsizeiptr size, void *data)
 {
 	using std::cout; using std::endl;
@@ -55,6 +67,57 @@ std::unique_ptr<GLProgramPipeline> GLContext::getProgramPipeline()
 	GLuint handle;
 	glGenProgramPipelines(1, &handle);
 	return std::unique_ptr<GLProgramPipeline>(new GLProgramPipeline(handle));
+}
+
+void GLContext::useExecutable(GLExecutable *s) noexcept
+{
+	if(s == nullptr)
+	{
+		glUseProgram(0);
+		glBindProgramPipeline(0);
+		pimpl->currentExecutable = nullptr;
+	}
+	else if(s != pimpl->currentExecutable)
+	{
+		s->use();
+		pimpl->currentExecutable = s;
+	}
+}
+
+void GLContext::useVao(GLVertexArrayObject *vao) noexcept
+{
+	if(vao == nullptr)
+	{
+		glBindVertexArray(0);
+		pimpl->currentVao = nullptr;
+	}
+	else if(vao != pimpl->currentVao)
+	{
+		vao->bind();
+		pimpl->currentVao = vao;
+	}
+}
+
+void GLContext::setRenderTarget(GLRenderTarget *rt) noexcept
+{
+	if(rt != pimpl->currentRenderTarget)
+	{
+		rt->drawTo();
+		pimpl->currentRenderTarget = rt;
+	}
+}
+
+GLExecutable* GLContext::getCurrentExecutable() noexcept
+{
+	return pimpl->currentExecutable;
+}
+GLVertexArrayObject* GLContext::getCurrentVao() noexcept
+{
+	return pimpl->currentVao;
+}
+GLRenderTarget* GLContext::getCurrentRenderTarget() noexcept
+{
+	return pimpl->currentRenderTarget;
 }
 
 void GLContext::setClearColor(glm::vec4 color) noexcept

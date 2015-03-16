@@ -22,6 +22,7 @@
 #include "GLVertexArrayObject.h"
 #include "GLShaderProgram.h"
 #include "GLProgramPipeline.h"
+#include "GLRenderTarget.h"
 
 class GLLinkerError : public std::runtime_error
 {
@@ -42,9 +43,13 @@ public:
 class GLContext
 {
 protected:
+	struct Pimpl;
+	Pimpl *pimpl;
+
 	static thread_local GLContext *currentContext;
 
 public:
+	GLContext();
     virtual ~GLContext() = 0;
 
     virtual void setSwapInterval(int i) noexcept = 0;
@@ -56,6 +61,14 @@ public:
     virtual std::unique_ptr<GLVertexArrayObject> getVertexArrayObject();
     virtual std::unique_ptr<GLShaderProgram> getStandaloneShaderProgram(GLenum type, const std::string& source, std::string *log);
     virtual std::unique_ptr<GLProgramPipeline> getProgramPipeline();
+
+    virtual void useExecutable(GLExecutable *s) noexcept;
+    virtual void useVao(GLVertexArrayObject *vao) noexcept;
+    virtual void setRenderTarget(GLRenderTarget *rt) noexcept;
+
+    virtual GLExecutable* getCurrentExecutable() noexcept;
+    virtual GLVertexArrayObject* getCurrentVao() noexcept;
+    virtual GLRenderTarget* getCurrentRenderTarget() noexcept;
 
     virtual void setClearColor(glm::vec4 color) noexcept;
     virtual void clear(GLbitfield mask) noexcept;

@@ -78,7 +78,6 @@ int main()
 	auto vao = context->getVertexArrayObject();
 	vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, 0, 0);
 	vao->setElementArrayBinding(*buffer);
-	vao->unBind();
 
 	std::unique_ptr<GLShaderProgram> vertProg, fragProg;
 
@@ -135,7 +134,7 @@ int main()
 		memcpy(raw, glm::value_ptr(modelCameraMat), sizeof(modelCameraMat));
 		squareUniformBuffer->unmap();
 
-		squareDrawCommand->draw();
+		squareDrawCommand->draw(context);
 
 		win->present();
 		win->handleEvents();

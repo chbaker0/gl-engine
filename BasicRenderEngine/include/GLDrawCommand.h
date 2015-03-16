@@ -11,6 +11,8 @@
 #include "GLVertexArrayObject.h"
 #include "GLExecutable.h"
 
+class GLContext;
+
 class GLDrawCommand
 {
 protected:
@@ -22,7 +24,7 @@ protected:
 public:
 	GLDrawCommand(GLVertexArrayObject *vao_in, GLExecutable *shaderExe_in, GLsizei elementCount_in, GLenum primType_in):
 		vao(vao_in), shaderExe(shaderExe_in), elementCount(elementCount_in), primType(primType_in) {}
-	virtual void draw() = 0;
+	virtual void draw(GLContext *context) = 0;
 
 	GLVertexArrayObject* getVao() const
 	{

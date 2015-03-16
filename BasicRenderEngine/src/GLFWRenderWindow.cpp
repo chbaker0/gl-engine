@@ -80,7 +80,7 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 	ptr->width = width;
 	ptr->height = height;
-	if(GLRenderTarget::getCurrentTarget() == ptr)
+	if(GLContext::getCurrentContext()->getCurrentRenderTarget() == ptr)
 		glViewport(0, 0, width, height);
 
 	ptr->messageQueue.push_back(Message(MessageType::Window_Resized, ptr));
@@ -181,9 +181,10 @@ void GLFWRenderWindow::present()
 
 void GLFWRenderWindow::drawTo()
 {
+	if(GLContext::getCurrentContext() != context)
+		throw GLFWRenderWindowException("Can't set GLFWRenderWindow as current render target if it's context isn't current");
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glViewport(0, 0, width, height);
-	GLRenderTarget::currentTarget = this;
 }
 
 void GLFWRenderWindow::handleEvents()
