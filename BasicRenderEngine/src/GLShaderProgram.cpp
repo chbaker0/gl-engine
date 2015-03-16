@@ -15,11 +15,7 @@ GLShaderProgram::~GLShaderProgram()
 
 void GLShaderProgram::use() noexcept
 {
-	if(activeExecutable != this)
-	{
-		glUseProgram(handle);
-		activeExecutable = this;
-	}
+	glUseProgram(handle);
 }
 
 void GLShaderProgram::setUniformBlockBinding(GLProgramUniformBlockIndex index, GLUniformBlockBinding binding) noexcept
