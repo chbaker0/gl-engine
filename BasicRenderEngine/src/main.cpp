@@ -18,6 +18,8 @@
 #include "GLContext.h"
 #include "GLDrawIndexedCommand.h"
 
+#include "Camera.h"
+
 #include "Utilities.h"
 
 #include "Messaging/Listener.h"
@@ -37,19 +39,6 @@ int main()
 	context->setCurrent();
 	// Enable vsync (hopefully)
 	context->setSwapInterval(1);
-
-	struct ListenerTest : public Listener
-	{
-		virtual void acceptMessage(Message &m) override
-		{
-			if(m.getType() == MessageType::Window_Resized)
-			{
-				GLRenderWindow *win = static_cast<GLRenderWindow*>(m.getSubject());
-				cout << "Window resized: new size " << win->getWidth() << "x" << win->getHeight() << endl;
-			}
-		}
-	} listenerTest;
-	win->registerListener(&listenerTest);
 
 	// Vertices for a square specified clockwise from top left
 	const float testSquareTris[] =
@@ -114,6 +103,32 @@ int main()
 
 	context->useRenderTarget(win.get());
 
+	Camera cam;
+	cam.setNearZ(0.5f);
+	cam.setFarZ(10.0f);
+	cam.setFov(70.0f);
+	cam.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
+	cam.setUpDirection(glm::vec3(0.0, 1.0, 0.0));
+
+	struct CameraAspectUpdater : public Listener
+	{
+		Camera& cam;
+		CameraAspectUpdater(Camera& cam_in): cam(cam_in) {}
+		virtual void acceptMessage(Message& m) override
+		{
+			if(m.getType() == MessageType::Window_Resized)
+			{
+				GLRenderWindow *subj = static_cast<GLRenderWindow*>(m.getSubject());
+				float newAspect = (float) subj->getWidth() / (float) subj->getHeight();
+				cam.setAspectRatio(newAspect);
+			}
+		}
+	};
+	CameraAspectUpdater cameraAspectUpdater(cam);
+	win->registerListener(&cameraAspectUpdater);
+
+	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
+
 	glm::mat4 modelWorldMat(1.0);
 	glm::mat4 worldCameraMat;
 	glm::mat4 cameraClipMat = glm::perspective(70.0f, 800 / (float)600, 0.5f, 15.0f);
@@ -121,14 +136,14 @@ int main()
 	{
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		worldCameraMat = glm::lookAt(glm::vec3(0.0, sin(win->getTime()), 1.0),
-		                             glm::vec3(0.0, 0.0, 0.0),
-		                             glm::vec3(0.0, 1.0, 0.0));
-
+		// Update uniform buffer with perspective projection matrix
 		raw = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
-		memcpy(raw, glm::value_ptr(cameraClipMat), sizeof(cameraClipMat));
+		memcpy(raw, glm::value_ptr(cam.calcPerspectiveMatrix()), sizeof(cameraClipMat));
 		globalUniformBuffer->unmap();
 
+		// Update modelview matrix
+		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
+		worldCameraMat = cam.calcViewMatrix();
 		glm::mat4 modelCameraMat = worldCameraMat * modelWorldMat;
 		raw = squareUniformBuffer->mapRange(0, squareUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
 		memcpy(raw, glm::value_ptr(modelCameraMat), sizeof(modelCameraMat));
