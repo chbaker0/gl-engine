@@ -14,6 +14,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <boost/fusion/include/adapt_struct.hpp>
+
 #include "GLRenderWindow.h"
 #include "GLContext.h"
 #include "GLDrawIndexedCommand.h"
@@ -21,9 +23,29 @@
 #include "Camera.h"
 
 #include "Utilities.h"
+#include "Utilities/AlignedWriter.h"
 
 #include "Messaging/Listener.h"
 #include "Messaging/MessageTypes.h"
+
+struct GlobalBlock
+{
+	glm::mat4 cameraClipMat;
+};
+BOOST_FUSION_ADAPT_STRUCT
+(GlobalBlock,
+ (glm::mat4, cameraClipMat)
+);
+
+struct ModelBlock
+{
+	glm::mat4 modelCameraMat;
+};
+BOOST_FUSION_ADAPT_STRUCT
+(ModelBlock,
+ (glm::mat4, modelCameraMat)
+);
+
 
 int main()
 {
@@ -132,21 +154,28 @@ int main()
 	glm::mat4 modelWorldMat(1.0);
 	glm::mat4 worldCameraMat;
 	glm::mat4 cameraClipMat = glm::perspective(70.0f, 800 / (float)600, 0.5f, 15.0f);
+
+	GlobalBlock globalBlock;
+	ModelBlock modelBlock;
+
 	while(!win->shouldClose())
 	{
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
+		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
+		globalBlock.cameraClipMat = cam.calcPerspectiveMatrix();
+
 		// Update uniform buffer with perspective projection matrix
 		raw = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
-		memcpy(raw, glm::value_ptr(cam.calcPerspectiveMatrix()), sizeof(cameraClipMat));
+		AlignedWriter globalWriter(raw);
+		globalWriter.write<AlignedWriterLayoutSTD140>(globalBlock);
 		globalUniformBuffer->unmap();
 
 		// Update modelview matrix
-		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
-		worldCameraMat = cam.calcViewMatrix();
-		glm::mat4 modelCameraMat = worldCameraMat * modelWorldMat;
 		raw = squareUniformBuffer->mapRange(0, squareUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
-		memcpy(raw, glm::value_ptr(modelCameraMat), sizeof(modelCameraMat));
+		AlignedWriter modelWriter(raw);
+		modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
 		squareUniformBuffer->unmap();
 
 		squareDrawCommand->draw(context);

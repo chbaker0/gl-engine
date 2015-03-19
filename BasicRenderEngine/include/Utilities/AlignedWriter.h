@@ -85,19 +85,19 @@ protected:
 
 	void alignBuffer(std::uintptr_t alignment) noexcept
 	{
-		auto bufferInt = static_cast<std::uintptr_t>(bufferHead);
+		auto bufferInt = reinterpret_cast<std::uintptr_t>(bufferHead);
 		bufferInt = roundToMultiple(bufferInt, alignment);
-		bufferHead = static_cast<void*>(bufferInt);
+		bufferHead = reinterpret_cast<void*>(bufferInt);
 	}
 	void incrementBuffer(std::uintptr_t distance) noexcept
 	{
-		auto bufferInt = static_cast<std::uintptr_t>(bufferHead);
+		auto bufferInt = reinterpret_cast<std::uintptr_t>(bufferHead);
 		bufferInt += distance;
-		bufferHead = static_cast<void*>(bufferInt);
+		bufferHead = reinterpret_cast<void*>(bufferInt);
 	}
 
 	template <typename T>
-	static void* getTypePtr(const T& t) noexcept
+	static const void* getTypePtr(const T& t) noexcept
 	{
 		return &t;
 	}
@@ -105,9 +105,9 @@ protected:
 	template <typename Layout, typename T>
 	void writeUnit(const T& unit) noexcept
 	{
-		alignBuffer(Layout::getAlignment<T>());
+		alignBuffer(Layout::template getAlignment<T>());
 		memcpy(bufferHead, getTypePtr(unit), sizeof(unit));
-		incrementBuffer(Layout::getSize<T>());
+		incrementBuffer(Layout::template getSize<T>());
 	}
 
 	template <typename Layout>
@@ -118,7 +118,7 @@ protected:
 		FusionCallable(AlignedWriter& w_in) noexcept: w(w_in) {}
 
 		template <typename T>
-		void operator()(const T& t)
+		void operator()(const T& t) const
 		{
 			w.writeUnit<Layout>(t);
 		}
@@ -132,8 +132,7 @@ public:
 	template <typename Layout, typename RandomAccessSequence>
 	void write(const RandomAccessSequence& seq) noexcept
 	{
-		RandomAccessSequence& seq_m = const_cast<RandomAccessSequence>(seq);
-		boost::fusion::for_each(seq_m, FusionCallable(*this));
+		boost::fusion::for_each(seq, FusionCallable<Layout>(*this));
 	}
 };
 
