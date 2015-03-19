@@ -128,6 +128,8 @@ public:
 	AlignedWriter(void *buffer_in) noexcept: bufferBase(buffer_in), bufferHead(buffer_in) {}
 
 	void reset() noexcept {bufferHead = bufferBase;}
+	void setOffset(std::uintptr_t off) noexcept {reset(); incrementBuffer(off);}
+	std::uintptr_t getOffset() noexcept {return (std::uintptr_t) bufferHead - (std::uintptr_t) bufferBase;}
 
 	template <typename Layout, typename RandomAccessSequence>
 	void write(const RandomAccessSequence& seq) noexcept

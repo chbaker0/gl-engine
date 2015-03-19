@@ -2,13 +2,14 @@
 
 layout (location = 0) in vec4 position;
 
-layout (std140, binding = 0) uniform GlobalMatrix
+layout (std140, binding = 0) uniform GlobalBlock
 {
     mat4 cameraClipMat;
 };
-layout (std140, binding = 1) uniform ModelMatrix
+layout (std140, binding = 1) uniform ModelBlock
 {
     mat4 modelCameraMat;
+    vec3 color;
 };
 
 out gl_PerVertex
@@ -16,7 +17,10 @@ out gl_PerVertex
     vec4 gl_Position;
 };
 
+out vec3 fragColor;
+
 void main()
 {
     gl_Position = cameraClipMat * modelCameraMat * position;
+    fragColor = color;
 }

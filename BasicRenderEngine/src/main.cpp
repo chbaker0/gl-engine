@@ -40,10 +40,12 @@ BOOST_FUSION_ADAPT_STRUCT
 struct ModelBlock
 {
 	glm::mat4 modelCameraMat;
+	glm::vec3 color;
 };
 BOOST_FUSION_ADAPT_STRUCT
 (ModelBlock,
  (glm::mat4, modelCameraMat)
+ (glm::vec3, color)
 );
 
 
@@ -81,8 +83,8 @@ int main()
 	memcpy(raw, testSquareInd, sizeof(testSquareInd));
 	buffer->unmap();
 
-	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 64, nullptr);
-	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 64, nullptr);
+	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 256, nullptr);
+	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 256, nullptr);
 	globalUniformBuffer->bindBase(GLUniformBlockBinding::GlobalBlock);
 	squareUniformBuffer->bindBase(GLUniformBlockBinding::ModelBlock);
 
@@ -165,6 +167,8 @@ int main()
 		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
 		globalBlock.cameraClipMat = cam.calcPerspectiveMatrix();
+
+		modelBlock.color = glm::mix(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), sin(win->getTime())*0.5+0.5);
 
 		// Update uniform buffer with perspective projection matrix
 		raw = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
