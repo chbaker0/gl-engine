@@ -17,7 +17,7 @@
 #include <boost/fusion/include/for_each.hpp>
 
 template <typename UnsignedType>
-constexpr UnsignedType roundToMultiple(UnsignedType num, UnsignedType factor)
+constexpr UnsignedType roundToMultiple(UnsignedType num, UnsignedType factor) noexcept
 {
 	return factor * ((num + factor - 1) / factor);
 }
@@ -27,36 +27,36 @@ struct AlignedWriterLayoutSTD140
 	template <typename T>
 	struct Type
 	{
-		static constexpr std::size_t getAlignment() {return sizeof(T);}
-		static constexpr std::size_t getSize() {return sizeof(T);}
+		static constexpr std::size_t getAlignment() noexcept {return sizeof(T);}
+		static constexpr std::size_t getSize() noexcept {return sizeof(T);}
 	};
 
 	template <typename T, int i>
 	struct Type<T[i]>
 	{
-		static constexpr std::size_t getAlignment() {return roundToMultiple(Type<T>::getSize(), Type<glm::vec4>::getSize());}
-		static constexpr std::size_t getSize() {return i * getAlignment();}
+		static constexpr std::size_t getAlignment() noexcept {return roundToMultiple(Type<T>::getSize(), Type<glm::vec4>::getSize());}
+		static constexpr std::size_t getSize() noexcept {return i * getAlignment();}
 	};
 
 	template <typename T, glm::precision P>
 	struct Type<glm::tvec2<T, P>>
 	{
-		static constexpr std::size_t getAlignment() {return 2 * Type<T>::getAlignment();}
-		static constexpr std::size_t getSize() {return 2 * Type<T>::getSize();}
+		static constexpr std::size_t getAlignment() noexcept {return 2 * Type<T>::getAlignment();}
+		static constexpr std::size_t getSize() noexcept {return 2 * Type<T>::getSize();}
 	};
 
 	template <typename T, glm::precision P>
 	struct Type<glm::tvec3<T, P>>
 	{
-		static constexpr std::size_t getAlignment() {return 4 * Type<T>::getAlignment();}
-		static constexpr std::size_t getSize() {return 4 * Type<T>::getSize();}
+		static constexpr std::size_t getAlignment() noexcept {return 4 * Type<T>::getAlignment();}
+		static constexpr std::size_t getSize() noexcept {return 4 * Type<T>::getSize();}
 	};
 
 	template <typename T, glm::precision P>
 	struct Type<glm::tvec4<T, P>>
 	{
-		static constexpr std::size_t getAlignment() {return 4 * Type<T>::getAlignment();}
-		static constexpr std::size_t getSize() {return 4 * Type<T>::getSize();}
+		static constexpr std::size_t getAlignment() noexcept {return 4 * Type<T>::getAlignment();}
+		static constexpr std::size_t getSize() noexcept {return 4 * Type<T>::getSize();}
 	};
 
 	template <typename T, glm::precision P>
@@ -66,14 +66,24 @@ struct AlignedWriterLayoutSTD140
 	struct Type<glm::tmat3x3<T, P>> : public Type<typename glm::tmat3x3<T, P>::col_type[3]> {};
 
 	template <typename T>
-	static constexpr std::size_t getAlignment()
+	static constexpr std::size_t getAlignment() noexcept
 	{
 		return Type<T>::getAlignment();
 	}
 	template <typename T>
-	static constexpr std::size_t getSize()
+	static constexpr std::size_t getSize() noexcept
 	{
 		return Type<T>::getSize();
+	}
+	template <typename T>
+	static constexpr std::size_t getArrayElementAlignment() noexcept
+	{
+		return Type<T>::getAlignment();
+	}
+	template <typename T>
+	static constexpr std::size_t getArrayElementSize() noexcept
+	{
+		return roundToMultiple(Type<T>::getSize(), Type<glm::vec4>::getSize());
 	}
 };
 
@@ -110,6 +120,23 @@ protected:
 		incrementBuffer(Layout::template getSize<T>());
 	}
 
+	template <typename Layout, typename T, int i>
+	void writeUnit(const T (&unit)[i]) noexcept
+	{
+		for(std::size_t j = 0; j < i; ++j)
+		{
+			alignBuffer(Layout::template getArrayElementAlignment<T>());
+			memcpy(bufferHead, getTypePtr(unit[j]), sizeof(unit[j]));
+			incrementBuffer(Layout::template getArrayElementSize<T>());
+		}
+	}
+
+	template <typename Layout, typename T, glm::precision P>
+	void writeUnit(const glm::tmat4x4<T, P>& unit) noexcept
+	{
+		writeUnit<Layout>(*static_cast<const glm::tvec4<T, P>(*)[4]>(static_cast<const void*>(&unit[0])));	// Ugly type cast hacks
+	}
+
 	template <typename Layout>
 	struct FusionCallable
 	{
@@ -118,7 +145,7 @@ protected:
 		FusionCallable(AlignedWriter& w_in) noexcept: w(w_in) {}
 
 		template <typename T>
-		void operator()(const T& t) const
+		void operator()(const T& t) const noexcept
 		{
 			w.writeUnit<Layout>(t);
 		}
