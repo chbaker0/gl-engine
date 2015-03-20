@@ -5,9 +5,11 @@
  *      Author: Collin
  */
 
+#include <stdexcept>
+
 #include "GLBuffer.h"
 
-GLBufferTargetSaver::GLBufferTargetSaver(GLenum target_in) noexcept
+GLBufferTargetSaver::GLBufferTargetSaver(GLenum target_in)
 {
 	target = target_in;
 	GLenum pname = GL_INVALID_ENUM;
@@ -23,6 +25,7 @@ GLBufferTargetSaver::GLBufferTargetSaver(GLenum target_in) noexcept
 		pname = GL_UNIFORM_BUFFER_BINDING;
 		break;
 	default:
+		throw std::logic_error("Invalid target passed to GLBufferTargetSaver constructor");
 		break;
 	}
 	GLint temp;

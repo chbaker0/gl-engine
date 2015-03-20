@@ -17,8 +17,8 @@
 class GLBuffer
 {
 protected:
-	GLuint handle;
 	GLenum target;
+	GLuint handle;
 	GLsizeiptr size;
 
 public:
@@ -58,8 +58,8 @@ private:
 	GLenum target;
 	GLuint handle;
 public:
-	GLBufferTargetSaver(GLenum target_in) noexcept;
-	GLBufferTargetSaver(const GLBuffer& targetSource) noexcept: GLBufferTargetSaver(targetSource.getTarget()) {}
+	GLBufferTargetSaver(GLenum target_in);
+	GLBufferTargetSaver(const GLBuffer& targetSource): GLBufferTargetSaver(targetSource.getTarget()) {}
 	GLBufferTargetSaver(const GLBufferTargetSaver&) = delete;
 	~GLBufferTargetSaver();
 };
