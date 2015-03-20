@@ -1,0 +1,24 @@
+For associating struct member names with indices:
+
+	boost::fusion::extension::struct_member_name<Seq, N>::call()
+	boost::fusion::extension::struct_size<Seq, N>::call()
+
+Compile time string comparison (thank-you VeXocide from #boost)
+
+constexpr int compare(char const * p, char const * q, std::size_t n)
+{
+    return !n
+        ? 0
+        : *p != *q
+            ? *p - *q
+            : !*p
+                ? 0
+                : compare(p + 1, q + 1, n - 1);
+}
+
+constexpr std::size_t length(char const * p)
+{
+    return !*p
+        ? 0
+        : 1 + length(p + 1);
+}
