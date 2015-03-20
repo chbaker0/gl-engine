@@ -3,6 +3,9 @@ For associating struct member names with indices:
 	boost::fusion::extension::struct_member_name<Seq, N>::call()
 	boost::fusion::extension::struct_size<Seq, N>::call()
 
+https://github.com/boostorg/fusion/blob/master/include/boost/fusion/adapted/struct/detail/extension.hpp
+https://github.com/boostorg/fusion/blob/master/include/boost/fusion/adapted/struct/detail/adapt_base.hpp#L213
+
 Compile time string comparison (thank-you VeXocide from #boost)
 
 constexpr int compare(char const * p, char const * q, std::size_t n)
