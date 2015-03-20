@@ -66,9 +66,9 @@ public:
     virtual void useVao(GLVertexArrayObject *vao) noexcept;
     virtual void useRenderTarget(GLRenderTarget *rt) noexcept;
 
-    virtual GLExecutable* getCurrentExecutable() noexcept;
-    virtual GLVertexArrayObject* getCurrentVao() noexcept;
-    virtual GLRenderTarget* getCurrentRenderTarget() noexcept;
+    virtual GLExecutable* getCurrentExecutable() const noexcept;
+    virtual GLVertexArrayObject* getCurrentVao() const noexcept;
+    virtual GLRenderTarget* getCurrentRenderTarget() const noexcept;
 
     virtual void setClearColor(glm::vec4 color) noexcept;
     virtual void clear(GLbitfield mask) noexcept;

@@ -107,15 +107,15 @@ void GLContext::useRenderTarget(GLRenderTarget *rt) noexcept
 	}
 }
 
-GLExecutable* GLContext::getCurrentExecutable() noexcept
+GLExecutable* GLContext::getCurrentExecutable() const noexcept
 {
 	return pimpl->currentExecutable;
 }
-GLVertexArrayObject* GLContext::getCurrentVao() noexcept
+GLVertexArrayObject* GLContext::getCurrentVao() const noexcept
 {
 	return pimpl->currentVao;
 }
-GLRenderTarget* GLContext::getCurrentRenderTarget() noexcept
+GLRenderTarget* GLContext::getCurrentRenderTarget() const noexcept
 {
 	return pimpl->currentRenderTarget;
 }
