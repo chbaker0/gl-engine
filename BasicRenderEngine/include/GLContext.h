@@ -23,6 +23,7 @@
 #include "GLShaderProgram.h"
 #include "GLProgramPipeline.h"
 #include "GLRenderTarget.h"
+#include "GLTexture.h"
 
 class GLLinkerError : public std::runtime_error
 {

@@ -27,10 +27,17 @@ public:
 
 class GLTexture2D : public GLTexture
 {
+protected:
+	GLsizei baseWidth, baseHeight;
+	GLint mipmapLevels;
+
 public:
 	GLTexture2D(GLuint handle_in, GLenum internalFormat_in) noexcept: GLTexture(handle, internalFormat) {}
 	virtual ~GLTexture2D() {}
 
+	virtual GLenum getTarget() const noexcept override final {return GL_TEXTURE_2D;}
+
+	void subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data);
 };
 
 class GLTextureTargetSaver
