@@ -154,6 +154,13 @@ int main()
 	CameraAspectUpdater cameraAspectUpdater(cam);
 	win->registerListener(&cameraAspectUpdater);
 
+	float texData[] =
+	{
+	 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+	 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	};
+	auto testTexture = context->getTexture2D(1, false, GL_RGBA32F, 2, 2, GL_RGBA, GL_FLOAT, texData);
+
 	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
 
 	glm::mat4 modelWorldMat(1.0);
@@ -189,6 +196,7 @@ int main()
 			modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
 		}
 
+		context->bindTexture(0, testTexture.get());
 		squareDrawCommand->draw(context);
 
 		win->present();

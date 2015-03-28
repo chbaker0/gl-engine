@@ -63,6 +63,12 @@ public:
     virtual std::unique_ptr<GLShaderProgram> getStandaloneShaderProgram(GLenum type, const std::string& source, std::string *log);
     virtual std::unique_ptr<GLProgramPipeline> getProgramPipeline();
 
+    virtual std::unique_ptr<GLTexture2D> getTexture2D(GLint levels, bool generateMipmaps, GLint internalFormat,
+                                                      GLsizei baseWidth, GLsizei baseHeight,
+                                                      GLenum format, GLenum type, const void *data);
+
+    virtual void bindTexture(GLuint textureUnit, GLTexture *texture);
+
     virtual void useExecutable(GLExecutable *s) noexcept;
     virtual void useVao(GLVertexArrayObject *vao) noexcept;
     virtual void useRenderTarget(GLRenderTarget *rt) noexcept;

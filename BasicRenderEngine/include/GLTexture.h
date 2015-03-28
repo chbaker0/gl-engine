@@ -32,7 +32,10 @@ protected:
 	GLint mipmapLevels;
 
 public:
-	GLTexture2D(GLuint handle_in, GLenum internalFormat_in) noexcept: GLTexture(handle, internalFormat) {}
+	GLTexture2D(GLuint handle_in, GLenum internalFormat_in,
+	            GLsizei baseWidth_in, GLsizei baseHeight_in,
+	            GLint mipmapLevels_in) noexcept:
+	            GLTexture(handle, internalFormat), baseWidth(baseWidth_in), baseHeight(baseHeight_in), mipmapLevels(mipmapLevels_in) {}
 	virtual ~GLTexture2D() {}
 
 	virtual GLenum getTarget() const noexcept override final {return GL_TEXTURE_2D;}

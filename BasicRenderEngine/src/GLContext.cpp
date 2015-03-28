@@ -69,6 +69,48 @@ std::unique_ptr<GLProgramPipeline> GLContext::getProgramPipeline()
 	return std::unique_ptr<GLProgramPipeline>(new GLProgramPipeline(handle));
 }
 
+std::unique_ptr<GLTexture2D> GLContext::getTexture2D(GLint levels, bool generateMipmaps, GLint internalFormat,
+                                                     GLsizei baseWidth, GLsizei baseHeight,
+                                                     GLenum format, GLenum type, const void *data)
+{
+	GLuint handle;
+	glGenTextures(1, &handle);
+	GLTextureTargetSaver saver(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, handle);
+	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, baseWidth, baseHeight, 0, format, type, data);
+	GLuint totalLevels = 1;
+	if(levels == 0)
+	{
+		GLsizei levelWidth = baseWidth,
+				levelHeight = baseHeight;
+		while(levelWidth > 1 && levelHeight > 1)
+		{
+			levelWidth /= 2, levelHeight /= 2;
+			if(levelWidth < 1)
+				levelWidth = 1;
+			if(levelHeight < 1)
+				levelHeight = 1;
+			glTexImage2D(GL_TEXTURE_2D, totalLevels, internalFormat, levelWidth, levelHeight, 0, format, type, nullptr);
+			++totalLevels;
+		}
+	}
+	else
+		totalLevels = levels;
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, totalLevels-1);
+
+	if(generateMipmaps)
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+	return std::unique_ptr<GLTexture2D>(new GLTexture2D(handle, internalFormat, baseWidth, baseHeight, totalLevels));
+}
+
+void GLContext::bindTexture(GLuint textureUnit, GLTexture *texture)
+{
+	glActiveTexture(GL_TEXTURE0);
+	texture->bind();
+}
+
 void GLContext::useExecutable(GLExecutable *s) noexcept
 {
 	if(s == nullptr)
