@@ -64,6 +64,8 @@ public:
 	~GLBufferTargetSaver();
 };
 
+class GLBufferMapping;
+
 class GLMappableBuffer : public GLBuffer
 {
 public:
@@ -74,9 +76,43 @@ public:
 	virtual bool isWritable() const noexcept = 0;
 	virtual bool isPersistent() const noexcept = 0;
 	virtual bool isCoherent() const noexcept = 0;
-	virtual void* mapRange(int64_t offset, uint64_t size, GLbitfield access);
+	virtual void* mapRangeRaw(int64_t offset, uint64_t size, GLbitfield access);
+	virtual GLBufferMapping mapRange(int64_t offset, uint64_t size, GLbitfield access);
 	virtual void flushRange(int64_t offset, uint64_t size) noexcept;
 	virtual void unmap();
+};
+
+class GLBufferMapping
+{
+private:
+	GLMappableBuffer& buf;
+	void *ptr;
+	int64_t offset;
+	uint64_t size;
+	GLbitfield access;
+
+public:
+	GLBufferMapping(GLMappableBuffer& buf_in, void *ptr_in, int64_t offset_in, uint64_t size_in, GLbitfield access_in) noexcept:
+		buf(buf_in), ptr(ptr_in), offset(offset_in), size(size_in), access(access_in) {}
+	~GLBufferMapping()
+	{
+		buf.unmap();
+	}
+
+	void* getMapPtr() noexcept {return ptr;}
+	const void* getMapPtr() const noexcept {return ptr;}
+	int64_t getMapOffset() const noexcept {return offset;}
+	uint64_t getMapSize() const noexcept {return size;}
+	GLbitfield getMapAccessFlags() const noexcept {return access;}
+
+	unsigned char& operator[](std::size_t i) noexcept
+	{
+		return static_cast<unsigned char*>(ptr)[i];
+	}
+	const unsigned char& operator[](std::size_t i) const noexcept
+	{
+		return static_cast<unsigned char*>(ptr)[i];
+	}
 };
 
 class GLBufferMapException : public std::exception

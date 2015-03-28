@@ -77,11 +77,14 @@ int main()
 
 	// Load square vertices and indices into buffer
 	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTris) + sizeof(testSquareInd), nullptr);
-	void *raw = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
-	memcpy(raw, testSquareTris, sizeof(testSquareTris));
-	raw = static_cast<char*>(raw) + sizeof(testSquareTris);
-	memcpy(raw, testSquareInd, sizeof(testSquareInd));
-	buffer->unmap();
+
+	{
+		GLBufferMapping map = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
+		void *raw = map.getMapPtr();
+		memcpy(raw, testSquareTris, sizeof(testSquareTris));
+		raw = static_cast<char*>(raw) + sizeof(testSquareTris);
+		memcpy(raw, testSquareInd, sizeof(testSquareInd));
+	}
 
 	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 256, nullptr);
 	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 256, nullptr);
@@ -171,16 +174,20 @@ int main()
 		modelBlock.color = glm::mix(glm::vec3(1.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0), sin(win->getTime())*0.5+0.5);
 
 		// Update uniform buffer with perspective projection matrix
-		raw = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
-		AlignedWriter globalWriter(raw);
-		globalWriter.write<AlignedWriterLayoutSTD140>(globalBlock);
-		globalUniformBuffer->unmap();
+		{
+			GLBufferMapping map = globalUniformBuffer->mapRange(0, globalUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
+			void *raw = map.getMapPtr();
+			AlignedWriter globalWriter(raw);
+			globalWriter.write<AlignedWriterLayoutSTD140>(globalBlock);
+		}
 
 		// Update modelview matrix
-		raw = squareUniformBuffer->mapRange(0, squareUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
-		AlignedWriter modelWriter(raw);
-		modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
-		squareUniformBuffer->unmap();
+		{
+			GLBufferMapping map = squareUniformBuffer->mapRange(0, squareUniformBuffer->getSize(), GL_MAP_WRITE_BIT);
+			void *raw = map.getMapPtr();
+			AlignedWriter modelWriter(raw);
+			modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
+		}
 
 		squareDrawCommand->draw(context);
 

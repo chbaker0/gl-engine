@@ -81,13 +81,18 @@ void GLBuffer::unBindFrom(GLenum target) noexcept
 	glBindBuffer(target, 0);
 }
 
-void* GLMappableBuffer::mapRange(int64_t offset, uint64_t size, GLbitfield access)
+void* GLMappableBuffer::mapRangeRaw(int64_t offset, uint64_t size, GLbitfield access)
 {
 	glBindBuffer(target, handle);
 	void *ptr = glMapBufferRange(target, offset, size, access);
 	if(ptr == nullptr)
 		throw GLBufferMapException();
 	return ptr;
+}
+
+GLBufferMapping GLMappableBuffer::mapRange(int64_t offset, uint64_t size, GLbitfield access)
+{
+	return GLBufferMapping(*this, mapRangeRaw(offset, size, access), offset, size, access);
 }
 
 void GLMappableBuffer::flushRange(int64_t offset, uint64_t size) noexcept
