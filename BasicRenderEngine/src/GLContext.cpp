@@ -98,6 +98,8 @@ std::unique_ptr<GLTexture2D> GLContext::getTexture2D(GLint levels, bool generate
 		totalLevels = levels;
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, totalLevels-1);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	if(generateMipmaps)
 		glGenerateMipmap(GL_TEXTURE_2D);
