@@ -46,3 +46,10 @@ GLTextureTargetSaver::~GLTextureTargetSaver()
 {
 	glBindTexture(target, handle);
 }
+
+void GLTexture2D::subImage(GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, void *data)
+{
+	GLTextureTargetSaver(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, handle);
+	glTexSubImage2D(GL_TEXTURE_2D, level, xoffset, yoffset, width, height, format, type, data);
+}
