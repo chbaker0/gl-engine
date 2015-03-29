@@ -109,7 +109,7 @@ std::unique_ptr<GLTexture2D> GLContext::getTexture2D(GLint levels, bool generate
 
 void GLContext::bindTexture(GLuint textureUnit, GLTexture *texture)
 {
-	glActiveTexture(GL_TEXTURE0);
+	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	texture->bind();
 }
 
@@ -118,7 +118,10 @@ std::unique_ptr<GLRenderbuffer> GLContext::getRenderbuffer(GLenum internalFormat
 	GLuint handle;
 	glGenRenderbuffers(1, &handle);
 	glBindRenderbuffer(GL_RENDERBUFFER, handle);
-	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalFormat, width, height);
+	if(samples > 1)
+		glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalFormat, width, height);
+	else
+		glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, width, height);
 	return std::unique_ptr<GLRenderbuffer>(new GLRenderbuffer(handle, internalFormat, width, height, samples));
 }
 

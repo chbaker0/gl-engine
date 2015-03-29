@@ -154,6 +154,8 @@ int main()
 	CameraAspectUpdater cameraAspectUpdater(cam);
 	win->registerListener(&cameraAspectUpdater);
 
+	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
+
 	float texData[] =
 	{
 	 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
@@ -161,7 +163,11 @@ int main()
 	};
 	auto testTexture = context->getTexture2D(1, false, GL_RGBA32F, 2, 2, GL_RGBA, GL_FLOAT, texData);
 
-	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
+	auto fbTexture = context->getTexture2D(1, false, GL_RGBA32F, 800, 600, GL_RGBA, GL_FLOAT, nullptr);
+	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT32F, 800, 600, 1);
+	auto fb = context->getFramebuffer();
+	fb->textureColorAttachment(0, fbTexture.get(), 0);
+	fb->renderbufferDepthAttachment(fbDepthRenderbuffer.get());
 
 	glm::mat4 modelWorldMat(1.0);
 	glm::mat4 worldCameraMat;
@@ -172,6 +178,8 @@ int main()
 
 	while(!win->shouldClose())
 	{
+		// Draw to framebuffer object
+		context->useRenderTarget(fb.get());
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
@@ -198,6 +206,10 @@ int main()
 
 		context->bindTexture(0, testTexture.get());
 		squareDrawCommand->draw(context);
+
+		// Blit to backbuffer
+		context->useRenderTarget(win.get());
+		fb->blitToCurrent(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		win->present();
 		win->handleEvents();

@@ -55,6 +55,10 @@ public:
 
 	virtual void drawTo() override final {bindTo(GL_DRAW_FRAMEBUFFER);}
 
+	void blitToCurrent(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
+	                   GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
+	                   GLbitfield mask, GLenum filter);
+
 	void bindTo(GLenum target) noexcept;
 
 	void textureColorAttachment(GLuint i, GLuint textureHandle, GLint level);

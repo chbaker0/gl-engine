@@ -34,6 +34,11 @@ GLFramebufferTargetSaver::~GLFramebufferTargetSaver()
 	glBindFramebuffer(target, handle);
 }
 
+GLRenderbuffer::~GLRenderbuffer()
+{
+	glDeleteRenderbuffers(1, &handle);
+}
+
 void GLRenderbuffer::bind() noexcept
 {
 	glBindRenderbuffer(GL_RENDERBUFFER, handle);
@@ -54,4 +59,19 @@ void GLFramebuffer::textureColorAttachment(GLuint i, GLuint textureHandle, GLint
 	GLFramebufferTargetSaver saver(GL_READ_FRAMEBUFFER);
 	bindTo(GL_READ_FRAMEBUFFER);
 	glFramebufferTexture(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, textureHandle, level);
+}
+
+void GLFramebuffer::renderbufferDepthAttachment(GLuint renderbufferHandle)
+{
+	GLFramebufferTargetSaver saver(GL_READ_FRAMEBUFFER);
+	bindTo(GL_READ_FRAMEBUFFER);
+	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbufferHandle);
+}
+
+void GLFramebuffer::blitToCurrent(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
+                                  GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
+                                  GLbitfield mask, GLenum filter)
+{
+	bindTo(GL_READ_FRAMEBUFFER);
+	glBlitFramebuffer(srcX0, srcY0, srcX1, srcY1, dstX0, dstY0, dstX1, dstY1, mask, filter);
 }
