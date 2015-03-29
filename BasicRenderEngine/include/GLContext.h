@@ -24,6 +24,7 @@
 #include "GLProgramPipeline.h"
 #include "GLRenderTarget.h"
 #include "GLTexture.h"
+#include "GLFramebuffer.h"
 
 class GLLinkerError : public std::runtime_error
 {
@@ -68,6 +69,9 @@ public:
                                                       GLenum format, GLenum type, const void *data);
 
     virtual void bindTexture(GLuint textureUnit, GLTexture *texture);
+
+    virtual std::unique_ptr<GLRenderbuffer> getRenderbuffer(GLenum internalFormat, GLsizei width, GLsizei height, GLsizei samples);
+    virtual std::unique_ptr<GLFramebuffer> getFramebuffer();
 
     virtual void useExecutable(GLExecutable *s) noexcept;
     virtual void useVao(GLVertexArrayObject *vao) noexcept;

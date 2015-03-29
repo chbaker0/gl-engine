@@ -113,6 +113,22 @@ void GLContext::bindTexture(GLuint textureUnit, GLTexture *texture)
 	texture->bind();
 }
 
+std::unique_ptr<GLRenderbuffer> GLContext::getRenderbuffer(GLenum internalFormat, GLsizei width, GLsizei height, GLsizei samples)
+{
+	GLuint handle;
+	glGenRenderbuffers(1, &handle);
+	glBindRenderbuffer(GL_RENDERBUFFER, handle);
+	glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, internalFormat, width, height);
+	return std::unique_ptr<GLRenderbuffer>(new GLRenderbuffer(handle, internalFormat, width, height, samples));
+}
+
+std::unique_ptr<GLFramebuffer> GLContext::getFramebuffer()
+{
+	GLuint handle;
+	glGenFramebuffers(1, &handle);
+	return std::unique_ptr<GLFramebuffer>(new GLFramebuffer(handle));
+}
+
 void GLContext::useExecutable(GLExecutable *s) noexcept
 {
 	if(s == nullptr)

@@ -21,6 +21,7 @@ public:
 	virtual ~GLTexture();
 
 	virtual GLenum getTarget() const noexcept = 0;
+	GLuint getHandle() const noexcept {return handle;}
 	GLenum getInternalFormat() const noexcept {return internalFormat;}
 	void bind() noexcept;
 	void unBind() noexcept;

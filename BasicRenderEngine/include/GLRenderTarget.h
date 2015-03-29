@@ -11,11 +11,9 @@
 class GLRenderTarget
 {
 public:
-	virtual ~GLRenderTarget() = 0;
+	virtual ~GLRenderTarget() {}
 
 	virtual void drawTo() = 0;
 };
-
-inline GLRenderTarget::~GLRenderTarget() {}
 
 #endif /* GL_RENDER_TARGET_H_INCLUDED */
