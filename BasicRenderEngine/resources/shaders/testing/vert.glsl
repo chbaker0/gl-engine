@@ -1,6 +1,7 @@
 #version 430
 
 layout (location = 0) in vec4 position;
+layout (location = 1) in vec2 texCoord;
 
 layout (std140, binding = 0) uniform GlobalBlock
 {
@@ -17,10 +18,10 @@ out gl_PerVertex
     vec4 gl_Position;
 };
 
-out vec3 fragColor;
+out vec2 texCoordFrag;
 
 void main()
 {
     gl_Position = cameraClipMat * modelCameraMat * position;
-    fragColor = color;
+    texCoordFrag = texCoord;
 }

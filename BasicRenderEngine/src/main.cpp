@@ -65,24 +65,33 @@ int main()
 	context->setSwapInterval(1);
 
 	// Vertices for a square specified clockwise from top left
-	const float testSquareTris[] =
+	const float testSquareTriPos[] =
 	{
 	 -0.5, 0.5, 0.0, 1.0,	// 0
 	 0.5, 0.5, 0.0, 1.0,		// 1
 	 0.5, -0.5, 0.0, 1.0,	// 2
 	 -0.5, -0.5, 0.0, 1.0	// 3
 	};
+	const float testSquareTriUV[] =
+	{
+	 0.0f, 0.0f,
+	 0.0f, 1.0f,
+	 1.0f, 1.0f,
+	 1.0f, 0.0f
+	};
 	// Triangle fan indices for square, CCW
 	const GLushort testSquareInd[] = {0, 3, 2, 1};
 
 	// Load square vertices and indices into buffer
-	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTris) + sizeof(testSquareInd), nullptr);
+	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTriPos) + sizeof(testSquareTriUV) + sizeof(testSquareInd), nullptr);
 
 	{
 		GLBufferMapping map = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
 		void *raw = map.getMapPtr();
-		memcpy(raw, testSquareTris, sizeof(testSquareTris));
-		raw = static_cast<char*>(raw) + sizeof(testSquareTris);
+		memcpy(raw, testSquareTriPos, sizeof(testSquareTriPos));
+		raw = static_cast<char*>(raw) + sizeof(testSquareTriPos);
+		memcpy(raw, testSquareTriUV, sizeof(testSquareTriUV));
+		raw = static_cast<char*>(raw) + sizeof(testSquareTriUV);
 		memcpy(raw, testSquareInd, sizeof(testSquareInd));
 	}
 
@@ -93,6 +102,7 @@ int main()
 
 	auto vao = context->getVertexArrayObject();
 	vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, 0, 0);
+	vao->setAttrib(1, *buffer, 2, GL_FLOAT, GL_FALSE, 0, (const void*) sizeof(testSquareTriPos));
 	vao->setElementArrayBinding(*buffer);
 
 	std::unique_ptr<GLShaderProgram> vertProg, fragProg;
@@ -122,7 +132,8 @@ int main()
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::GlobalBlock, GLUniformBlockBinding::GlobalBlock);
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::ModelBlock, GLUniformBlockBinding::ModelBlock);
 
-	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 4, GL_TRIANGLE_FAN, (void*)sizeof(testSquareTris), GL_UNSIGNED_SHORT));
+	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 4, GL_TRIANGLE_FAN,
+	                                                                                   (void*)(sizeof(testSquareTriPos) + sizeof(testSquareTriUV)), GL_UNSIGNED_SHORT));
 
 	context->faceCullingEnabled(true);
 	context->depthTestEnabled(true);
