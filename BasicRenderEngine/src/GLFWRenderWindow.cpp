@@ -3,6 +3,7 @@
 #include <utility>
 
 #include <boost/scope_exit.hpp>
+#include <boost/pool/object_pool.hpp>
 
 #include "GLFWRenderWindow.h"
 #include "GLFWWindowContext.h"
@@ -44,6 +45,8 @@ void GLFWRenderWindow::keyCallback(GLFWwindow *handle, int key, int scancode, in
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 
+
+
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
 		glfwSetWindowShouldClose(handle, true);
@@ -83,7 +86,7 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 	if(GLContext::getCurrentContext()->getCurrentRenderTarget() == ptr)
 		glViewport(0, 0, width, height);
 
-	ptr->messageQueue.push_back(Message(MessageType::Window_Resized, ptr));
+	ptr->messageQueue.push_back(new Message(MessageType::Window_Resized, ptr));
 }
 
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
@@ -191,12 +194,14 @@ void GLFWRenderWindow::drawTo()
 void GLFWRenderWindow::handleEvents()
 {
 	glfwPollEvents();
-	for(Message m : messageQueue)
+	for(Message *m : messageQueue)
 	{
 		for(Listener *l : listeners)
 		{
-			l->acceptMessage(m);
+			l->acceptMessage(*m);
 		}
+
+		delete m;
 	}
 	messageQueue.clear();
 }

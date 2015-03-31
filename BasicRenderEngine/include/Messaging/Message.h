@@ -22,7 +22,7 @@ public:
 	Message(MessageType type_in, Subject *subject_in): type(type_in), subject(subject_in) {}
 	virtual ~Message() {}
 
-	virtual MessageType getType() const noexcept
+	MessageType getType() const noexcept
 	{
 		return type;
 	}
@@ -30,6 +30,9 @@ public:
 	{
 		return subject;
 	}
+
+	static void* operator new(std::size_t);
+	static void operator delete(void*);
 };
 
 #endif /* MESSAGING_MESSAGE_H_INCLUDED */

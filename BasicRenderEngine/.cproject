@@ -56,10 +56,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug.1224363711" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug">
 								<option id="gnu.cpp.link.option.paths.759001297" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${glfw3_library_dir}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${boost_system_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${glew_library_dir}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1985888884" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
+									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
 								</option>

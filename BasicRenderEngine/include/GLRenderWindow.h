@@ -15,7 +15,7 @@ class GLRenderWindowException : public std::exception {};
 class GLRenderWindow : public GLRenderTarget, public Subject
 {
 public:
-    virtual ~GLRenderWindow() = 0;
+    virtual ~GLRenderWindow() {}
 
     virtual unsigned int getWidth() const noexcept = 0;
     virtual unsigned int getHeight() const noexcept = 0;
@@ -25,8 +25,6 @@ public:
     virtual double getTime() const = 0;
     virtual GLContext* getContext() = 0;
 };
-
-inline GLRenderWindow::~GLRenderWindow() {}
 
 class GLRenderWindowCreator
 {
