@@ -193,6 +193,14 @@ void GLContext::clear(GLbitfield mask) noexcept
 	glClear(mask);
 }
 
+void GLContext::srgbWriteEnabled(bool enabled) noexcept
+{
+	if(enabled)
+		glEnable(GL_FRAMEBUFFER_SRGB);
+	else
+		glEnable(GL_FRAMEBUFFER_SRGB);
+}
+
 void GLContext::depthTestEnabled(bool enabled) noexcept
 {
 	if(enabled)

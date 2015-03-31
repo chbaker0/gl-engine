@@ -42,6 +42,7 @@ public:
     void hintGLVersion(unsigned int major, unsigned int minor);
     void hintTitle(std::string title);
     void hintDebug(bool debug);
+    void hintSRGB(bool srgb);
 
     std::unique_ptr<GLRenderWindow> create() const;
 };

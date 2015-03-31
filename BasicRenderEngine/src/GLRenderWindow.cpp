@@ -10,6 +10,7 @@ struct GLRenderWindowCreator::Pimpl
     unsigned int xSize, ySize;
     unsigned int glVersionMajor, glVersionMinor;
     bool debug;
+    bool srgb;
     std::string title;
 };
 
@@ -38,6 +39,10 @@ void GLRenderWindowCreator::hintDebug(bool debug)
 {
     pimpl->debug = debug;
 }
+void GLRenderWindowCreator::hintSRGB(bool srgb)
+{
+	pimpl->srgb = srgb;
+}
 
 std::unique_ptr<GLRenderWindow> GLRenderWindowCreator::create() const
 {
@@ -45,7 +50,7 @@ std::unique_ptr<GLRenderWindow> GLRenderWindowCreator::create() const
 
 	GLFWRenderWindow *ptr = new GLFWRenderWindow(pimpl->xSize, pimpl->ySize,
             									 pimpl->glVersionMajor, pimpl->glVersionMinor,
-												 pimpl->title.c_str(), pimpl->debug);
+												 pimpl->title.c_str(), pimpl->debug, pimpl->srgb);
 
     return std::unique_ptr<GLRenderWindow>(ptr);
 }

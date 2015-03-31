@@ -90,7 +90,7 @@ static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum
 
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
-                                   const char *title, bool debug)
+                                   const char *title, bool debug, bool srgb)
 {
 	// Initialize GLFW
     initialize();
@@ -109,6 +109,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_SRGB_CAPABLE, srgb);
     // Set a debug context if asked
     if(debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);

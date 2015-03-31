@@ -84,6 +84,7 @@ public:
     virtual void setClearColor(glm::vec4 color) noexcept;
     virtual void clear(GLbitfield mask) noexcept;
 
+    virtual void srgbWriteEnabled(bool enabled) noexcept;
     virtual void depthTestEnabled(bool enabled) noexcept;
     virtual void faceCullingEnabled(bool enabled) noexcept;
 

@@ -32,7 +32,7 @@ private:
 public:
     GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
                      unsigned int glVersionMajor, unsigned int glVersionMinor,
-                     const char *title, bool debug);
+                     const char *title, bool debug, bool srgb);
     ~GLFWRenderWindow();
 
     virtual unsigned int getWidth() const noexcept override {return width;}

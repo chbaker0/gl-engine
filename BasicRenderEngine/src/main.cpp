@@ -56,6 +56,7 @@ int main()
 	GLRenderWindowCreator creator;
 	creator.hintGLVersion(4, 4);
 	creator.hintDebug(true);
+	creator.hintSRGB(true);
 	creator.hintSize(800, 600);
 	creator.hintTitle("Test Window");
 	std::unique_ptr<GLRenderWindow> win(creator.create());
@@ -63,6 +64,8 @@ int main()
 	context->setCurrent();
 	// Enable vsync (hopefully)
 	context->setSwapInterval(1);
+
+	context->srgbWriteEnabled(true);
 
 	// Vertices for a square specified clockwise from top left
 	const float testSquareTriPos[] =
