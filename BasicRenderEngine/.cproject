@@ -131,10 +131,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.release.576243470" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.release">
 								<option id="gnu.cpp.link.option.paths.872507637" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${glfw3_library_dir}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${boost_system_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${glew_library_dir}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.25877881" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
+									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
 								</option>
@@ -214,10 +216,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug.1654996039" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug">
 								<option id="gnu.cpp.link.option.paths.417687615" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${glfw3_library_dir}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${boost_system_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${glew_library_dir}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.48274937" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
+									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
 								</option>
@@ -288,10 +292,12 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.release.659304560" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.release">
 								<option id="gnu.cpp.link.option.paths.1205104844" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${glfw3_library_dir}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${boost_system_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${glew_library_dir}&quot;"/>
 								</option>
 								<option id="gnu.cpp.link.option.libs.1252942131" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
+									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
 								</option>

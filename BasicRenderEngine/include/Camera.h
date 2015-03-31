@@ -49,6 +49,10 @@ public:
 	{
 		this->position = position;
 	}
+	void offsetPosition(glm::vec3 offset)
+	{
+		this->position += offset;
+	}
 
 	glm::vec3 getTarget() const
 	{
@@ -57,6 +61,21 @@ public:
 	void setTarget(glm::vec3 target)
 	{
 		this->target = target;
+	}
+	void offsetTarget(glm::vec3 offset)
+	{
+		this->target += offset;
+	}
+
+	void offsetCamera(glm::vec3 offset)
+	{
+		offsetPosition(offset);
+		offsetTarget(offset);
+	}
+
+	glm::vec3 calcForwardDirection() const
+	{
+		return glm::normalize(target - position);
 	}
 
 	glm::vec3 getUpDirection() const

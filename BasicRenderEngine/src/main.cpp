@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <utility>
 
 #include <cstring>
 #include <cmath>
@@ -152,10 +153,17 @@ int main()
 	cam.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 	cam.setUpDirection(glm::vec3(0.0, 1.0, 0.0));
 
-	struct CameraAspectUpdater : public Listener
+	struct CameraUpdater : public Listener
 	{
 		Camera& cam;
-		CameraAspectUpdater(Camera& cam_in): cam(cam_in) {}
+		struct Movement
+		{
+			bool forwardPressed : 1;
+			bool backwardPressed : 1;
+			bool rightPressed : 1;
+			bool leftPressed : 1;
+		} movement;
+		CameraUpdater(Camera& cam_in): cam(cam_in), movement{0, 0} {}
 		virtual void acceptMessage(Message& m) override
 		{
 			if(m.getType() == MessageType::Window_Resized)
@@ -164,10 +172,49 @@ int main()
 				float newAspect = (float) subj->getWidth() / (float) subj->getHeight();
 				cam.setAspectRatio(newAspect);
 			}
+			else if(m.getType() == MessageType::KeyboardInput)
+			{
+				KeyMessage& km = static_cast<KeyMessage&>(m);
+				switch(km.getKey())
+				{
+				case 'W':
+					movement.forwardPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
+				case 'A':
+					movement.leftPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
+				case 'S':
+					movement.backwardPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
+				case 'D':
+					movement.rightPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+		glm::vec3 calcVelocity() const
+		{
+			int forwardDir = movement.forwardPressed ?
+					1 : movement.backwardPressed ? -1 : 0;
+			int rightDir = movement.rightPressed ?
+					1 : movement.leftPressed ? -1 : 0;
+			glm::vec3 camForwardDir = cam.calcForwardDirection();
+			glm::vec3 camUpDir = cam.getUpDirection();
+			glm::vec3 camRightDir = -glm::cross(camUpDir, camForwardDir);
+			glm::vec3 v(0.0f);
+			v += glm::vec3((float)forwardDir) * camForwardDir;
+			v += glm::vec3((float)rightDir) * camRightDir;
+			return v;
 		}
 	};
-	CameraAspectUpdater cameraAspectUpdater(cam);
-	win->registerListener(&cameraAspectUpdater);
+	CameraUpdater cameraUpdater(cam);
+	win->registerListener(&cameraUpdater);
 
 	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
 
@@ -219,13 +266,22 @@ int main()
 	GlobalBlock globalBlock;
 	ModelBlock modelBlock;
 
+	double prevFrameTime = 0.0;
+	double curFrameTime = 0.0;
+	double elapsedTime = 0.0;
+
 	while(!win->shouldClose())
 	{
+		prevFrameTime = curFrameTime;
+		curFrameTime = win->getTime();
+		elapsedTime = curFrameTime - prevFrameTime;
 		// Draw to framebuffer object
 		context->useRenderTarget(win.get());
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
+		glm::vec3 cameraVelocity = cameraUpdater.calcVelocity();
+		cam.offsetCamera(glm::vec3((float)elapsedTime * 3.0f) * cameraVelocity);
+
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
 		globalBlock.cameraClipMat = cam.calcPerspectiveMatrix();
 

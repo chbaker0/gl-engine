@@ -45,7 +45,21 @@ void GLFWRenderWindow::keyCallback(GLFWwindow *handle, int key, int scancode, in
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 
-	ptr->messageQueue.push_back(new KeyMessage(ptr, key));
+	KeyMessage::Action translatedAction;
+	switch(action)
+	{
+	case GLFW_PRESS:
+		translatedAction = KeyMessage::Press;
+		break;
+	case GLFW_REPEAT:
+		translatedAction = KeyMessage::Repeat;
+		break;
+	default:
+		translatedAction = KeyMessage::Release;
+		break;
+	}
+
+	ptr->messageQueue.push_back(new KeyMessage(ptr, key, translatedAction));
 
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
