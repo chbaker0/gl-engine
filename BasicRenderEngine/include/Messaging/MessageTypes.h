@@ -10,7 +10,8 @@
 
 enum class MessageType : unsigned long
 {
-	Window_Resized
+	Window_Resized,
+	Window_KeyboardInput
 };
 
 #endif /* MESSAGING_MESSAGE_TYPES_H_INCLUDED */

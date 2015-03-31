@@ -19,7 +19,7 @@ private:
     GLFWWindowContext *context;
     unsigned int width, height;
 
-    std::vector<Message> messageQueue;
+    std::vector<Message*> messageQueue;
 
     static void framebufferResizeCallback(GLFWwindow*, int, int);
     static void windowCloseCallback(GLFWwindow *handle);
