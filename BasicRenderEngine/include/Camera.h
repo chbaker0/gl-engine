@@ -9,6 +9,7 @@
 #define CAMERA_H_INCLUDED
 
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 class Camera
 {
@@ -71,6 +72,12 @@ public:
 	{
 		offsetPosition(offset);
 		offsetTarget(offset);
+	}
+
+	void orientCamera(glm::quat orientation)
+	{
+		target = position + orientation * target;
+		upDirection = orientation * upDirection;
 	}
 
 	glm::vec3 calcForwardDirection() const
