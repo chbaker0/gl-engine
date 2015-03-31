@@ -198,7 +198,7 @@ void GLContext::srgbWriteEnabled(bool enabled) noexcept
 	if(enabled)
 		glEnable(GL_FRAMEBUFFER_SRGB);
 	else
-		glEnable(GL_FRAMEBUFFER_SRGB);
+		glDisable(GL_FRAMEBUFFER_SRGB);
 }
 
 void GLContext::depthTestEnabled(bool enabled) noexcept

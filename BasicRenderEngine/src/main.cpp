@@ -26,6 +26,7 @@
 #include "Utilities/AlignedWriter.h"
 
 #include "Messaging/Listener.h"
+#include "Messaging/KeyMessage.h"
 #include "Messaging/MessageTypes.h"
 
 struct GlobalBlock
@@ -140,7 +141,7 @@ int main()
 
 	context->faceCullingEnabled(true);
 	context->depthTestEnabled(true);
-	context->setClearColor(glm::vec4(0.0, 0.0, 1.0, 1.0));
+	context->setClearColor(glm::vec4(0.0, 0.0, 0.5, 1.0));
 
 	context->useRenderTarget(win.get());
 
@@ -172,10 +173,38 @@ int main()
 
 	float texData[] =
 	{
-	 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-	 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+	 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, 1.0f,
+	 0.0f, 0.5f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f
 	};
-	auto testTexture = context->getTexture2D(1, false, GL_RGBA32F, 2, 2, GL_RGBA, GL_FLOAT, texData);
+	auto testTexture = context->getTexture2D(1, false, GL_RGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
+	auto testTextureSRGB = context->getTexture2D(1, false, GL_SRGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
+
+	bool useSRGBTexture = false;
+
+	struct SRGBFramebufferControl : public Listener
+	{
+		GLContext& context;
+		bool& useSRGBTexture;
+		SRGBFramebufferControl(GLContext& context_in, bool& useSRGBTexture_in):
+			context(context_in), useSRGBTexture(useSRGBTexture_in) {}
+		virtual void acceptMessage(Message& m) override
+		{
+			if(m.getType() == MessageType::KeyboardInput)
+			{
+				KeyMessage& km = static_cast<KeyMessage&>(m);
+				if(km.getKey() == '[')
+					context.srgbWriteEnabled(true);
+				else if(km.getKey() == ']')
+					context.srgbWriteEnabled(false);
+				else if(km.getKey() == ';')
+					useSRGBTexture = false;
+				else if(km.getKey() == '\'')
+					useSRGBTexture = true;
+			}
+		}
+	};
+	SRGBFramebufferControl srgbFramebufferControl(*context, useSRGBTexture);
+	win->registerListener(&srgbFramebufferControl);
 
 	auto fbTexture = context->getTexture2D(1, false, GL_RGBA32F, 800, 600, GL_RGBA, GL_FLOAT, nullptr);
 	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT32F, 800, 600, 1);
@@ -193,7 +222,7 @@ int main()
 	while(!win->shouldClose())
 	{
 		// Draw to framebuffer object
-		context->useRenderTarget(fb.get());
+		context->useRenderTarget(win.get());
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		cam.setPosition(glm::vec3(0.0, sin(win->getTime()), 1.0));
@@ -218,12 +247,15 @@ int main()
 			modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
 		}
 
-		context->bindTexture(0, testTexture.get());
+		if(useSRGBTexture)
+			context->bindTexture(0, testTextureSRGB.get());
+		else
+			context->bindTexture(0, testTexture.get());
 		squareDrawCommand->draw(context);
 
-		// Blit to backbuffer
-		context->useRenderTarget(win.get());
-		fb->blitToCurrent(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+//		// Blit to backbuffer
+//		context->useRenderTarget(win.get());
+//		fb->blitToCurrent(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		win->present();
 		win->handleEvents();
