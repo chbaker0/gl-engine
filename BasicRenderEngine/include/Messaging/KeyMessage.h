@@ -11,15 +11,15 @@
 #include "Message.h"
 #include "MessageTypes.h"
 
-class KeyMessage : Message
+class KeyMessage : public Message
 {
 private:
-	unsigned int key;
+	int key;
 
 public:
-	KeyMessage(Subject *subject): Message(MessageType::KeyboardInput, subject) {}
+	KeyMessage(Subject *subject, int key_in): Message(MessageType::KeyboardInput, subject), key(key_in) {}
 
-	unsigned int getKey() const noexcept {return key;}
+	int getKey() const noexcept {return key;}
 
 	static void* operator new(std::size_t);
 	static void operator delete(void*);

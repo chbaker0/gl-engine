@@ -45,7 +45,7 @@ void GLFWRenderWindow::keyCallback(GLFWwindow *handle, int key, int scancode, in
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
 
-
+	ptr->messageQueue.push_back(new KeyMessage(ptr, key));
 
 	if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
@@ -86,7 +86,14 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 	if(GLContext::getCurrentContext()->getCurrentRenderTarget() == ptr)
 		glViewport(0, 0, width, height);
 
-	ptr->messageQueue.push_back(new Message(MessageType::Window_Resized, ptr));
+	// Replace last message in queue if it is another resize message
+	if(ptr->messageQueue.size() && ptr->messageQueue.back()->getType() == MessageType::Window_Resized)
+	{
+		delete ptr->messageQueue.back();
+		ptr->messageQueue.back() = new Message(MessageType::Window_Resized, ptr);
+	}
+	else
+		ptr->messageQueue.push_back(new Message(MessageType::Window_Resized, ptr));
 }
 
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);

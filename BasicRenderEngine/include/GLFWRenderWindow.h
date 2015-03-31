@@ -11,6 +11,7 @@
 #include "GLFWWindowContext.h"
 
 #include "Messaging/Message.h"
+#include "Messaging/KeyMessage.h"
 
 class GLFWRenderWindow : public GLRenderWindow
 {
