@@ -68,6 +68,13 @@ void GLFramebuffer::renderbufferDepthAttachment(GLuint renderbufferHandle)
 	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderbufferHandle);
 }
 
+void GLFramebuffer::renderbufferColorAttachment(GLuint i, GLuint renderbufferHandle)
+{
+	GLFramebufferTargetSaver saver(GL_READ_FRAMEBUFFER);
+	bindTo(GL_READ_FRAMEBUFFER);
+	glFramebufferRenderbuffer(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_RENDERBUFFER, renderbufferHandle);
+}
+
 void GLFramebuffer::blitToCurrent(GLint srcX0, GLint srcY0, GLint srcX1, GLint srcY1,
                                   GLint dstX0, GLint dstY0, GLint dstX1, GLint dstY1,
                                   GLbitfield mask, GLenum filter)

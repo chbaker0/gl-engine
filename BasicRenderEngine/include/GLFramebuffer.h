@@ -64,6 +64,8 @@ public:
 	void textureColorAttachment(GLuint i, GLuint textureHandle, GLint level);
 	void textureColorAttachment(GLuint i, GLTexture *texture, GLint level) {textureColorAttachment(i, texture->getHandle(), level);}
 
+	void renderbufferColorAttachment(GLuint i, GLuint renderbufferHandle);
+	void renderbufferColorAttachment(GLuint i, GLRenderbuffer *renderbuffer) {renderbufferColorAttachment(i, renderbuffer->getHandle());}
 	void renderbufferDepthAttachment(GLuint renderbufferHandle);
 	void renderbufferDepthAttachment(GLRenderbuffer *renderbuffer) {renderbufferDepthAttachment(renderbuffer->getHandle());}
 };

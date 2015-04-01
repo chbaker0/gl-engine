@@ -30,7 +30,7 @@ public:
 	}
 	glm::mat4 calcPerspectiveMatrix() const noexcept
 	{
-		return glm::perspective(fov, aspectRatio, nearZ, farZ);
+		return glm::perspective(glm::radians(fov), aspectRatio, nearZ, farZ);
 	}
 
 	float getFov() const
@@ -76,7 +76,7 @@ public:
 
 	void orientCamera(glm::quat orientation)
 	{
-		target = position + orientation * target;
+		target = position + orientation * (target - position);
 		upDirection = orientation * upDirection;
 	}
 

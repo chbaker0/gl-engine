@@ -204,12 +204,22 @@ int main()
 					movement.rotRightPressed =
 							km.getAction() == KeyMessage::Release ? false : true;
 					break;
+				case '=':
+					if(km.getAction() != KeyMessage::Release)
+						if(cam.getFov() < 100.0f)
+							cam.setFov(cam.getFov() + 1.0f);
+					break;
+				case '-':
+					if(km.getAction() != KeyMessage::Release)
+						if(cam.getFov() > 10.0f)
+							cam.setFov(cam.getFov() - 1.0f);
+					break;
 				default:
 					break;
 				}
 			}
 		}
-		void calcMovement(glm::vec3& linearV, glm::quat angularV) const
+		void calcMovement(glm::vec3& linearV, glm::vec3& angularV) const
 		{
 			int forwardDir = movement.forwardPressed ?
 					1 : movement.backwardPressed ? -1 : 0;
@@ -221,7 +231,7 @@ int main()
 
 			int rotRightDir = movement.rotRightPressed ?
 					1 : movement.rotLeftPressed ? -1 : 0;
-			angularV = glm::rotate(glm::quat(), rotRightDir * glm::pi<float>() / 10.0f, camForwardDir);
+			angularV = glm::vec3(rotRightDir) * camForwardDir;
 
 			linearV = glm::vec3(0.0f);
 			linearV += glm::vec3((float)forwardDir) * camForwardDir;
@@ -268,21 +278,21 @@ int main()
 	SRGBFramebufferControl srgbFramebufferControl(*context, useSRGBTexture);
 	win->registerListener(&srgbFramebufferControl);
 
-	auto fbTexture = context->getTexture2D(1, false, GL_RGBA8, 800, 600, GL_RGBA, GL_FLOAT, nullptr);
-	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT32F, 800, 600, 1);
+	auto fbColorRenderbuffer = context->getRenderbuffer(GL_RGBA8, 800, 600, 1);
+	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT16, 800, 600, 1);
 	auto fb = context->getFramebuffer();
-	fb->textureColorAttachment(0, fbTexture.get(), 0);
+	fb->renderbufferColorAttachment(0, fbColorRenderbuffer.get());
 	fb->renderbufferDepthAttachment(fbDepthRenderbuffer.get());
 
 	struct FramebufferResizeHandler : public Listener
 	{
 		GLContext& context;
-		unique_ptr<GLTexture2D>& tex;
+		unique_ptr<GLRenderbuffer>& rbc;
 		unique_ptr<GLRenderbuffer>& rb;
 		unique_ptr<GLFramebuffer>& fb;
-		FramebufferResizeHandler(GLContext& context_in, unique_ptr<GLTexture2D>& tex_in,
+		FramebufferResizeHandler(GLContext& context_in, unique_ptr<GLRenderbuffer>& rbc_in,
 		                         unique_ptr<GLRenderbuffer>& rb_in, unique_ptr<GLFramebuffer>& fb_in):
-			context(context_in), tex(tex_in), rb(rb_in), fb(fb_in) {}
+			context(context_in), rbc(rbc_in), rb(rb_in), fb(fb_in) {}
 		virtual void acceptMessage(Message& m)
 		{
 			if(m.getType() == MessageType::Window_Resized)
@@ -290,19 +300,17 @@ int main()
 				GLRenderWindow *win = static_cast<GLRenderWindow*>(m.getSubject());
 				unsigned int x = win->getWidth(),
 							 y = win->getHeight();
-				tex = context.getTexture2D(1, false, GL_RGBA8, x, y, GL_RGBA, GL_FLOAT, nullptr);
-				rb = context.getRenderbuffer(GL_DEPTH_COMPONENT32F, x, y, 1);
-				fb->textureColorAttachment(0, tex.get(), 0);
+				rbc = context.getRenderbuffer(GL_RGBA8, x, y, 1);
+				rb = context.getRenderbuffer(GL_DEPTH_COMPONENT16, x, y, 1);
+				fb->renderbufferColorAttachment(0, rbc.get());
 				fb->renderbufferDepthAttachment(rb.get());
 			}
 		}
 	};
-	FramebufferResizeHandler framebufferResizeHandler(*context, fbTexture, fbDepthRenderbuffer, fb);
+	FramebufferResizeHandler framebufferResizeHandler(*context, fbColorRenderbuffer, fbDepthRenderbuffer, fb);
 	win->registerListener(&framebufferResizeHandler);
 
 	glm::mat4 modelWorldMat(1.0);
-	glm::mat4 worldCameraMat;
-	glm::mat4 cameraClipMat = glm::perspective(70.0f, 800 / (float)600, 0.5f, 15.0f);
 
 	GlobalBlock globalBlock;
 	ModelBlock modelBlock;
@@ -321,10 +329,14 @@ int main()
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		glm::vec3 linearV;
-		glm::quat angularV;
+		glm::vec3 angularV;
 		cameraUpdater.calcMovement(linearV, angularV);
 		cam.offsetCamera(glm::vec3((float)elapsedTime * 3.0f) * linearV);
-		cam.orientCamera(angularV * (float)elapsedTime);
+		if(glm::length(angularV) > 0.01f)
+		{
+			cout << "rotating" << endl;
+			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * 10.0f, angularV));
+		}
 
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
 		globalBlock.cameraClipMat = cam.calcPerspectiveMatrix();
