@@ -5,9 +5,13 @@
 #include <boost/scope_exit.hpp>
 #include <boost/pool/object_pool.hpp>
 
+#include <glm/glm.hpp>
+
 #include "GLFWRenderWindow.h"
 #include "GLFWWindowContext.h"
 
+#include "Messaging/KeyMessage.h"
+#include "Messaging/MouseMessage.h"
 #include "Messaging/MessageTypes.h"
 
 class GLFWRenderWindowException : public GLRenderWindowException
@@ -70,6 +74,10 @@ void GLFWRenderWindow::keyCallback(GLFWwindow *handle, int key, int scancode, in
 void GLFWRenderWindow::cursorPosCallback(GLFWwindow *handle, double xpos, double ypos)
 {
 	auto ptr = (GLFWRenderWindow*) glfwGetWindowUserPointer(handle);
+
+	ptr->messageQueue.push_back(new MouseMessage(ptr, xpos, ypos, xpos - ptr->lastCursorX, ypos - ptr->lastCursorY));
+	ptr->lastCursorX = xpos;
+	ptr->lastCursorY = ypos;
 }
 
 void GLFWRenderWindow::cursorEnterCallback(GLFWwindow *handle, int entered)
@@ -114,7 +122,8 @@ static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum
 
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
-                                   const char *title, bool debug, bool srgb)
+                                   const char *title, bool debug, bool srgb):
+                                		   lastCursorX(0.0f), lastCursorY(0.0f)
 {
 	// Initialize GLFW
     initialize();
@@ -154,6 +163,8 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
     glfwSetScrollCallback(handle, scrollCallback);
     glfwSetWindowCloseCallback(handle, windowCloseCallback);
     glfwSetFramebufferSizeCallback(handle, framebufferResizeCallback);
+
+    glfwSetInputMode(handle, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     // Scope guard to reset context to previously current one after glew initialization
     GLFWwindow *temp = glfwGetCurrentContext();

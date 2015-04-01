@@ -11,7 +11,6 @@
 #include "GLFWWindowContext.h"
 
 #include "Messaging/Message.h"
-#include "Messaging/KeyMessage.h"
 
 class GLFWRenderWindow : public GLRenderWindow
 {
@@ -19,6 +18,8 @@ private:
     GLFWwindow *handle;
     GLFWWindowContext *context;
     unsigned int width, height;
+
+    float lastCursorX, lastCursorY;
 
     std::vector<Message*> messageQueue;
 

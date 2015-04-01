@@ -29,6 +29,7 @@
 
 #include "Messaging/Listener.h"
 #include "Messaging/KeyMessage.h"
+#include "Messaging/MouseMessage.h"
 #include "Messaging/MessageTypes.h"
 
 struct GlobalBlock
@@ -141,7 +142,7 @@ int main()
 	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 4, GL_TRIANGLE_FAN,
 	                                                                                   (void*)(sizeof(testSquareTriPos) + sizeof(testSquareTriUV)), GL_UNSIGNED_SHORT));
 
-	context->faceCullingEnabled(true);
+	context->faceCullingEnabled(false);
 	context->depthTestEnabled(true);
 	context->setClearColor(glm::vec4(0.0, 0.0, 0.5, 1.0));
 
@@ -159,14 +160,16 @@ int main()
 		Camera& cam;
 		struct Movement
 		{
+			float pitchMouseChange;
+			float yawMouseChange;
 			bool forwardPressed : 1;
 			bool backwardPressed : 1;
 			bool rightPressed : 1;
 			bool leftPressed : 1;
 			bool rotRightPressed : 1;
 			bool rotLeftPressed : 1;
-		} movement;
-		CameraUpdater(Camera& cam_in): cam(cam_in), movement{0, 0} {}
+		} mutable movement;
+		CameraUpdater(Camera& cam_in): cam(cam_in), movement{0.0f, 0.0f, false, false, false, false, false, false} {}
 		virtual void acceptMessage(Message& m) override
 		{
 			if(m.getType() == MessageType::Window_Resized)
@@ -174,6 +177,14 @@ int main()
 				GLRenderWindow *subj = static_cast<GLRenderWindow*>(m.getSubject());
 				float newAspect = (float) subj->getWidth() / (float) subj->getHeight();
 				cam.setAspectRatio(newAspect);
+			}
+			else if(m.getType() == MessageType::MouseInput)
+			{
+				MouseMessage& mm = static_cast<MouseMessage&>(m);
+				glm::vec2 mouseChange = mm.getChange();
+				movement.pitchMouseChange += mouseChange.y;
+				movement.yawMouseChange += mouseChange.x;
+				cout << movement.pitchMouseChange << ' ' << movement.yawMouseChange << endl;
 			}
 			else if(m.getType() == MessageType::KeyboardInput)
 			{
@@ -232,6 +243,12 @@ int main()
 			int rotRightDir = movement.rotRightPressed ?
 					1 : movement.rotLeftPressed ? -1 : 0;
 			angularV = glm::vec3(rotRightDir) * camForwardDir;
+			angularV += glm::vec3(-movement.pitchMouseChange) * camRightDir;
+			angularV += glm::vec3(-movement.yawMouseChange) * camUpDir;
+
+			// Zero out mouse changes after processing them
+			movement.pitchMouseChange = 0.0f;
+			movement.yawMouseChange = 0.0f;
 
 			linearV = glm::vec3(0.0f);
 			linearV += glm::vec3((float)forwardDir) * camForwardDir;
@@ -334,8 +351,7 @@ int main()
 		cam.offsetCamera(glm::vec3((float)elapsedTime * 3.0f) * linearV);
 		if(glm::length(angularV) > 0.01f)
 		{
-			cout << "rotating" << endl;
-			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * 10.0f, angularV));
+			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * length(angularV) * 2.0f, angularV));
 		}
 
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
