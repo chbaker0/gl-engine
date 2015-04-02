@@ -77,7 +77,9 @@ public:
 	void orientCamera(glm::quat orientation)
 	{
 		target = position + orientation * (target - position);
-		upDirection = glm::normalize(orientation * upDirection);
+		upDirection = orientation * upDirection;
+		glm::vec3 rightDirection = glm::cross(target - position, upDirection);
+		upDirection = glm::normalize(glm::cross(rightDirection, target - position));
 	}
 
 	glm::vec3 calcForwardDirection() const
