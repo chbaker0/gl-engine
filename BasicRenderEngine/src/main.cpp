@@ -355,7 +355,7 @@ int main()
 		cam.offsetCamera(glm::vec3((float)elapsedTime * 3.0f) * linearV);
 		if(glm::length(angularV) > 0.01f)
 		{
-			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * length(angularV) * 2.0f, angularV));
+			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * length(angularV) * 3.2f, angularV));
 		}
 
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
