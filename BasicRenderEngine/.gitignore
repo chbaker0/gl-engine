@@ -10,3 +10,4 @@ RunGPUPerfStudio.bat
 /log.txt
 /Debug profile/
 /gmon.out
+/CMakeBuild/

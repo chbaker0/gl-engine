@@ -77,7 +77,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938.592092489" name="log.txt" rcbsApplicability="disable" resourcePath="log.txt" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938.1107555573" name="RunGPUPerfStudio.bat" rcbsApplicability="disable" resourcePath="RunGPUPerfStudio.bat" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|src|include/src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="CMakeBuild|resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|src|include/src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -152,7 +152,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.673578377" name="log.txt" rcbsApplicability="disable" resourcePath="log.txt" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1730613816" name="RunGPUPerfStudio.bat" rcbsApplicability="disable" resourcePath="RunGPUPerfStudio.bat" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|include/src|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="CMakeBuild|resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|include/src|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -239,7 +239,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938.880969137.496672027" name="log.txt" rcbsApplicability="disable" resourcePath="log.txt" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938.880969137.480592884" name="RunGPUPerfStudio.bat" rcbsApplicability="disable" resourcePath="RunGPUPerfStudio.bat" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|src|include/src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="CMakeBuild|resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|src|include/src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
@@ -312,7 +312,7 @@
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221.2016133668" name="log.txt" rcbsApplicability="disable" resourcePath="log.txt" toolsToInvoke=""/>
 					<fileInfo id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221.1315441984" name="RunGPUPerfStudio.bat" rcbsApplicability="disable" resourcePath="RunGPUPerfStudio.bat" toolsToInvoke=""/>
 					<sourceEntries>
-						<entry excluding="resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|include/src|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="CMakeBuild|resources/shaders|log.txt|RunGPUPerfStudio.bat|Notes.txt|include/src|src" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="src"/>
 					</sourceEntries>
 				</configuration>
