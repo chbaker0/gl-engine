@@ -147,7 +147,7 @@ int main()
 	context->useRenderTarget(win.get());
 
 	Camera cam;
-	cam.setNearZ(0.5f);
+	cam.setNearZ(0.2f);
 	cam.setFarZ(10.0f);
 	cam.setFov(70.0f);
 	cam.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -164,6 +164,8 @@ int main()
 			bool backwardPressed : 1;
 			bool rightPressed : 1;
 			bool leftPressed : 1;
+			bool upPressed : 1;
+			bool downPressed : 1;
 			bool rotRightPressed : 1;
 			bool rotLeftPressed : 1;
 		} mutable movement;
@@ -205,6 +207,14 @@ int main()
 					movement.rightPressed =
 							km.getAction() == KeyMessage::Release ? false : true;
 					break;
+				case 'R':
+					movement.upPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
+				case 'F':
+					movement.downPressed =
+							km.getAction() == KeyMessage::Release ? false : true;
+					break;
 				case 'Q':
 					movement.rotLeftPressed =
 							km.getAction() == KeyMessage::Release ? false : true;
@@ -234,6 +244,8 @@ int main()
 					1 : movement.backwardPressed ? -1 : 0;
 			int rightDir = movement.rightPressed ?
 					1 : movement.leftPressed ? -1 : 0;
+			int upDir = movement.upPressed ?
+					1 : movement.downPressed ? -1 : 0;
 			glm::vec3 camForwardDir = cam.calcForwardDirection();
 			glm::vec3 camUpDir = cam.getUpDirection();
 			glm::vec3 camRightDir = -glm::cross(camUpDir, camForwardDir);
@@ -251,6 +263,7 @@ int main()
 			linearV = glm::vec3(0.0f);
 			linearV += glm::vec3((float)forwardDir) * camForwardDir;
 			linearV += glm::vec3((float)rightDir) * camRightDir;
+			linearV += glm::vec3((float)upDir) * camUpDir;
 		}
 	};
 	CameraUpdater cameraUpdater(cam);
@@ -267,7 +280,6 @@ int main()
 	auto testTextureSRGB = context->getTexture2D(1, false, GL_SRGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
 
 	auto testSampler = context->getSampler();
-	testSampler->setAnisotropy(4.0f);
 	testSampler->setMagFilter(GL_NEAREST);
 	testSampler->setMinFilter(GL_NEAREST);
 	testSampler->setWrapMode(GL_CLAMP_TO_EDGE);
