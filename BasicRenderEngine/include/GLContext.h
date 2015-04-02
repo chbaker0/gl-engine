@@ -24,6 +24,7 @@
 #include "GLProgramPipeline.h"
 #include "GLRenderTarget.h"
 #include "GLTexture.h"
+#include "GLSampler.h"
 #include "GLFramebuffer.h"
 
 class GLLinkerError : public std::runtime_error
@@ -67,8 +68,10 @@ public:
     virtual std::unique_ptr<GLTexture2D> getTexture2D(GLint levels, bool generateMipmaps, GLint internalFormat,
                                                       GLsizei baseWidth, GLsizei baseHeight,
                                                       GLenum format, GLenum type, const void *data);
+    virtual std::unique_ptr<GLSampler> getSampler();
 
     virtual void bindTexture(GLuint textureUnit, GLTexture *texture);
+    virtual void bindSampler(GLuint textureUnit, GLSampler *sampler);
 
     virtual std::unique_ptr<GLRenderbuffer> getRenderbuffer(GLenum internalFormat, GLsizei width, GLsizei height, GLsizei samples);
     virtual std::unique_ptr<GLFramebuffer> getFramebuffer();

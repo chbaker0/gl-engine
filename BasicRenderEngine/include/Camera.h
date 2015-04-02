@@ -77,7 +77,7 @@ public:
 	void orientCamera(glm::quat orientation)
 	{
 		target = position + orientation * (target - position);
-		upDirection = orientation * upDirection;
+		upDirection = glm::normalize(orientation * upDirection);
 	}
 
 	glm::vec3 calcForwardDirection() const
@@ -91,7 +91,7 @@ public:
 	}
 	void setUpDirection(glm::vec3 upDirection)
 	{
-		this->upDirection = upDirection;
+		this->upDirection = glm::normalize(upDirection);
 	}
 	
 	float getAspectRatio() const

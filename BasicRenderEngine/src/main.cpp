@@ -9,8 +9,6 @@
 #include <cstring>
 #include <cmath>
 
-#include <GL/glew.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -268,6 +266,12 @@ int main()
 	auto testTexture = context->getTexture2D(1, false, GL_RGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
 	auto testTextureSRGB = context->getTexture2D(1, false, GL_SRGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
 
+	auto testSampler = context->getSampler();
+	testSampler->setAnisotropy(4.0f);
+	testSampler->setMagFilter(GL_NEAREST);
+	testSampler->setMinFilter(GL_NEAREST);
+	testSampler->setWrapMode(GL_CLAMP_TO_EDGE);
+
 	bool useSRGBTexture = false;
 
 	struct SRGBFramebufferControl : public Listener
@@ -379,6 +383,7 @@ int main()
 			context->bindTexture(0, testTextureSRGB.get());
 		else
 			context->bindTexture(0, testTexture.get());
+		context->bindSampler(0, testSampler.get());
 		squareDrawCommand->draw(context);
 
 		// Blit to backbuffer
