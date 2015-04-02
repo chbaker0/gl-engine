@@ -40,6 +40,10 @@ public:
 	~GLRenderbuffer();
 
 	GLuint getHandle() noexcept {return handle;}
+	GLenum getInternalFormat() const noexcept {return internalFormat;}
+	GLsizei getWidth() const noexcept {return width;}
+	GLsizei getHeight() const noexcept {return height;}
+	GLsizei getSamples() const noexcept {return samples;}
 
 	void bind() noexcept;
 };

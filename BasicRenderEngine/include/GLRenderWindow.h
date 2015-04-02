@@ -19,6 +19,8 @@ public:
 
     virtual unsigned int getWidth() const noexcept = 0;
     virtual unsigned int getHeight() const noexcept = 0;
+    virtual unsigned int getScreenWidth() const noexcept = 0;
+    virtual unsigned int getScreenHeight() const noexcept = 0;
     virtual bool shouldClose() const = 0;
     virtual void present() = 0;
     virtual void handleEvents() = 0;
@@ -41,6 +43,7 @@ public:
     void hintTitle(std::string title);
     void hintDebug(bool debug);
     void hintSRGB(bool srgb);
+    void hintFullscreen(bool fullscreen);
 
     std::unique_ptr<GLRenderWindow> create() const;
 };

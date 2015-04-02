@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <vector>
 #include <utility>
 
 #include <cstring>
@@ -58,7 +59,7 @@ int main()
 	GLRenderWindowCreator creator;
 	creator.hintGLVersion(4, 4);
 	creator.hintDebug(true);
-	creator.hintSRGB(true);
+	creator.hintFullscreen(false);
 	creator.hintSize(800, 600);
 	creator.hintTitle("Test Window");
 	std::unique_ptr<GLRenderWindow> win(creator.create());
@@ -271,17 +272,25 @@ int main()
 
 	cam.setAspectRatio((float) win->getWidth() / (float) win->getHeight());
 
-	float texData[] =
+//	float texData[] =
+//	{
+//	 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, 1.0f,
+//	 0.0f, 0.5f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f
+//	};
+	vector<float> texData;
+	const unsigned int colorBlocks = 5;
+	for(unsigned int i = 0; i < colorBlocks; ++i)
 	{
-	 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, 1.0f,
-	 0.0f, 0.5f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f
-	};
-	auto testTexture = context->getTexture2D(1, false, GL_RGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
-	auto testTextureSRGB = context->getTexture2D(1, false, GL_SRGB8, 2, 2, GL_RGBA, GL_FLOAT, texData);
+		for(unsigned int j = 0; j < 3; ++j)
+			texData.push_back((float) i / (float) (colorBlocks-1.0f));
+		texData.push_back(1.0f);
+	}
+	auto testTexture = context->getTexture2D(0, true, GL_RGB8, colorBlocks, 1, GL_RGBA, GL_FLOAT, &texData[0]);
+	auto testTextureSRGB = context->getTexture2D(0, true, GL_SRGB8, colorBlocks, 1, GL_RGBA, GL_FLOAT, &texData[0]);
 
 	auto testSampler = context->getSampler();
 	testSampler->setMagFilter(GL_NEAREST);
-	testSampler->setMinFilter(GL_NEAREST);
+	testSampler->setMinFilter(GL_NEAREST_MIPMAP_NEAREST);
 	testSampler->setWrapMode(GL_CLAMP_TO_EDGE);
 
 	bool useSRGBTexture = false;
@@ -311,8 +320,8 @@ int main()
 	SRGBFramebufferControl srgbFramebufferControl(*context, useSRGBTexture);
 	win->registerListener(&srgbFramebufferControl);
 
-	auto fbColorRenderbuffer = context->getRenderbuffer(GL_RGBA8, 800, 600, 1);
-	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT16, 800, 600, 1);
+	auto fbColorRenderbuffer = context->getRenderbuffer(GL_SRGB8_ALPHA8, win->getWidth(), win->getHeight(), 1);
+	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT16, win->getWidth(), win->getHeight(), 1);
 	auto fb = context->getFramebuffer();
 	fb->renderbufferColorAttachment(0, fbColorRenderbuffer.get());
 	fb->renderbufferDepthAttachment(fbDepthRenderbuffer.get());
@@ -333,8 +342,8 @@ int main()
 				GLRenderWindow *win = static_cast<GLRenderWindow*>(m.getSubject());
 				unsigned int x = win->getWidth(),
 							 y = win->getHeight();
-				rbc = context.getRenderbuffer(GL_RGBA8, x, y, 1);
-				rb = context.getRenderbuffer(GL_DEPTH_COMPONENT16, x, y, 1);
+				rbc = context.getRenderbuffer(rbc->getInternalFormat(), x, y, rbc->getSamples());
+				rb = context.getRenderbuffer(rb->getInternalFormat(), x, y, rb->getSamples());
 				fb->renderbufferColorAttachment(0, rbc.get());
 				fb->renderbufferDepthAttachment(rb.get());
 			}
@@ -358,6 +367,7 @@ int main()
 		curFrameTime = win->getTime();
 		elapsedTime = curFrameTime - prevFrameTime;
 		// Draw to framebuffer object
+		// On my system this is the only way I can get SRGB to work...
 		context->useRenderTarget(fb.get());
 		context->clear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

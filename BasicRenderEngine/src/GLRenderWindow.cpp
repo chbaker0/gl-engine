@@ -11,12 +11,13 @@ struct GLRenderWindowCreator::Pimpl
     unsigned int glVersionMajor, glVersionMinor;
     bool debug;
     bool srgb;
+    bool fullscreen;
     std::string title;
 };
 
 GLRenderWindowCreator::GLRenderWindowCreator()
 {
-    pimpl = new Pimpl{0, 0, 3, 3, false};
+    pimpl = new Pimpl{0, 0, 3, 3, false, false, false};
 }
 GLRenderWindowCreator::~GLRenderWindowCreator()
 {
@@ -43,12 +44,16 @@ void GLRenderWindowCreator::hintSRGB(bool srgb)
 {
 	pimpl->srgb = srgb;
 }
+void GLRenderWindowCreator::hintFullscreen(bool fullscreen)
+{
+	pimpl->fullscreen = fullscreen;
+}
 
 std::unique_ptr<GLRenderWindow> GLRenderWindowCreator::create() const
 {
     // Can allow for different implementations. For now, just use GLFW
 
-	GLFWRenderWindow *ptr = new GLFWRenderWindow(pimpl->xSize, pimpl->ySize,
+	GLFWRenderWindow *ptr = new GLFWRenderWindow(pimpl->xSize, pimpl->ySize, pimpl->fullscreen,
             									 pimpl->glVersionMajor, pimpl->glVersionMinor,
 												 pimpl->title.c_str(), pimpl->debug, pimpl->srgb);
 

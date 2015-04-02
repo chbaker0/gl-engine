@@ -120,7 +120,7 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
-GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
+GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool fullscreen,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
                                    const char *title, bool debug, bool srgb):
                                 		   lastCursorX(0.0f), lastCursorY(0.0f)
@@ -142,15 +142,40 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize,
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, glVersionMinor);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_SRGB_CAPABLE, srgb);
+    if(srgb)
+    {
+    	glfwWindowHint(GLFW_SRGB_CAPABLE, GL_TRUE);
+    	std::cout << "Asking for SRGB" << std::endl;
+    }
     // Set a debug context if asked
     if(debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
     // Create window, throw exception if failed
-    handle = glfwCreateWindow(xSize, ySize, title, nullptr, nullptr);
+    if(fullscreen)
+    {
+    	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+    	if(monitor == nullptr)
+    		throw GLFWRenderWindowException("Could not get handle to monitor");
+    	if(xSize == 0 || ySize == 0)
+    	{
+        	const GLFWvidmode *vmode = glfwGetVideoMode(monitor);
+        	if(vmode == nullptr)
+        		throw GLFWRenderWindowException("Could not get video mode information");
+    		xSize = vmode->width;
+    		ySize = vmode->height;
+    	}
+    	handle = glfwCreateWindow(xSize, ySize, title, monitor, nullptr);
+    }
+    else
+    {
+        handle = glfwCreateWindow(xSize, ySize, title, nullptr, nullptr);
+    }
     if(handle == nullptr)
         throw GLFWRenderWindowException("Could not create GLFW window");
-    width = xSize, height = ySize;
+    screenWidth = xSize, screenHeight = ySize;
+    int tempw, temph;
+    glfwGetFramebufferSize(handle, &tempw, &temph);
+    width = tempw, height = temph;
 
     // Set pointer to this class for callbacks
     glfwSetWindowUserPointer(handle, this);
