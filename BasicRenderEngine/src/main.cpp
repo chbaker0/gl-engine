@@ -8,6 +8,7 @@
 #include <utility>
 
 #include <cstring>
+#include <cstdlib>
 #include <cmath>
 
 #include <glm/glm.hpp>
@@ -53,18 +54,15 @@ BOOST_FUSION_ADAPT_STRUCT
  (glm::vec3, color)
 );
 
+std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv);
 
-int main()
+int main(int argc, char **argv)
+{
+try
 {
 	using namespace std;
 
-	GLRenderWindowCreator creator;
-	creator.hintGLVersion(4, 4);
-	creator.hintDebug(true);
-	creator.hintFullscreen(true);
-	creator.hintSize(0, 0);
-	creator.hintTitle("Test Window");
-	std::unique_ptr<GLRenderWindow> win(creator.create());
+	std::unique_ptr<GLRenderWindow> win = createWindow(argc, argv);
 	GLContext *context = win->getContext();
 	context->setCurrent();
 	// Enable vsync (hopefully)
@@ -322,8 +320,8 @@ int main()
 	SRGBFramebufferControl srgbFramebufferControl(*context, useSRGBTexture);
 	win->registerListener(&srgbFramebufferControl);
 
-	auto fbColorRenderbuffer = context->getRenderbuffer(GL_SRGB8_ALPHA8, win->getWidth(), win->getHeight(), 1);
-	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT16, win->getWidth(), win->getHeight(), 1);
+	auto fbColorRenderbuffer = context->getRenderbuffer(GL_SRGB8_ALPHA8, win->getWidth(), win->getHeight(), 4);
+	auto fbDepthRenderbuffer = context->getRenderbuffer(GL_DEPTH_COMPONENT16, win->getWidth(), win->getHeight(), 4);
 	auto fb = context->getFramebuffer();
 	fb->renderbufferColorAttachment(0, fbColorRenderbuffer.get());
 	fb->renderbufferDepthAttachment(fbDepthRenderbuffer.get());
@@ -420,4 +418,36 @@ int main()
 		win->present();
 		win->handleEvents();
 	}
+} // try
+catch(std::exception& e)
+{
+	std::cout << e.what() << std::endl;
+	return 1;
+}
+}
+
+std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
+{
+	unsigned int x = 800, y = 600;
+	bool fullscreen = false;
+
+	if(argc >= 3)
+	{
+		x = std::strtoul(argv[1], nullptr, 10);
+		y = std::strtoul(argv[2], nullptr, 10);
+	}
+	if(argc >= 4)
+	{
+		if(argv[3][0] == 'f' || argv[3][0] == 'F')
+			fullscreen = true;
+	}
+
+	GLRenderWindowCreator creator;
+	creator.hintGLVersion(4, 4);
+	creator.hintDebug(true);
+	creator.hintFullscreen(fullscreen);
+	creator.hintSize(x, y);
+	creator.hintTitle("Test Window");
+
+	return creator.create();
 }

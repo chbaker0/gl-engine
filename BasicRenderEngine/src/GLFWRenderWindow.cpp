@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <utility>
 
@@ -27,11 +28,17 @@ public:
     }
 };
 
+static void GLFWErrorCallack(int code, const char *str)
+{
+	std::cerr << str << std::endl;
+}
+
 static unsigned int winCount = 0;
 static void initializeGLFW()
 {
     if(winCount++ == 0)
     {
+    	glfwSetErrorCallback(GLFWErrorCallack);
         if(!glfwInit())
             throw GLFWRenderWindowException("Could not initialize GLFW");
     }
