@@ -30,12 +30,16 @@ public:
 	}
 	glm::mat4 calcPerspectiveMatrix() const noexcept
 	{
-		return glm::perspective(glm::radians(fov), aspectRatio, nearZ, farZ);
+		return glm::perspective(fov, aspectRatio, nearZ, farZ);
 	}
 
 	float getFov() const
 	{
 		return fov;
+	}
+	void setFovDeg(float fov)
+	{
+		this->fov = glm::radians(fov);
 	}
 	void setFov(float fov)
 	{

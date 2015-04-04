@@ -34,10 +34,12 @@
 struct GlobalBlock
 {
 	glm::mat4 cameraClipMat;
+	float time;
 };
 BOOST_FUSION_ADAPT_STRUCT
 (GlobalBlock,
  (glm::mat4, cameraClipMat)
+ (float, time)
 );
 
 struct ModelBlock
@@ -59,8 +61,8 @@ int main()
 	GLRenderWindowCreator creator;
 	creator.hintGLVersion(4, 4);
 	creator.hintDebug(true);
-	creator.hintFullscreen(false);
-	creator.hintSize(800, 600);
+	creator.hintFullscreen(true);
+	creator.hintSize(0, 0);
 	creator.hintTitle("Test Window");
 	std::unique_ptr<GLRenderWindow> win(creator.create());
 	GLContext *context = win->getContext();
@@ -149,8 +151,8 @@ int main()
 
 	Camera cam;
 	cam.setNearZ(0.2f);
-	cam.setFarZ(10.0f);
-	cam.setFov(70.0f);
+	cam.setFarZ(50.0f);
+	cam.setFov(0.608f);
 	cam.setTarget(glm::vec3(0.0f, 0.0f, 0.0f));
 	cam.setUpDirection(glm::vec3(0.0, 1.0, 0.0));
 
@@ -226,13 +228,13 @@ int main()
 					break;
 				case '=':
 					if(km.getAction() != KeyMessage::Release)
-						if(cam.getFov() < 100.0f)
-							cam.setFov(cam.getFov() + 1.0f);
+						if(cam.getFov() < 1.0f)
+							cam.setFov(cam.getFov() + 0.01f);
 					break;
 				case '-':
 					if(km.getAction() != KeyMessage::Release)
-						if(cam.getFov() > 10.0f)
-							cam.setFov(cam.getFov() - 1.0f);
+						if(cam.getFov() > 0.1f)
+							cam.setFov(cam.getFov() - 0.01f);
 					break;
 				default:
 					break;
@@ -366,6 +368,7 @@ int main()
 		prevFrameTime = curFrameTime;
 		curFrameTime = win->getTime();
 		elapsedTime = curFrameTime - prevFrameTime;
+		globalBlock.time = curFrameTime;
 		// Draw to framebuffer object
 		// On my system this is the only way I can get SRGB to work...
 		context->useRenderTarget(fb.get());

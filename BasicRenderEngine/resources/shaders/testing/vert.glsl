@@ -6,6 +6,7 @@ layout (location = 1) in vec2 texCoord;
 layout (std140, binding = 0) uniform GlobalBlock
 {
     mat4 cameraClipMat;
+    float time;
 };
 layout (std140, binding = 1) uniform ModelBlock
 {
