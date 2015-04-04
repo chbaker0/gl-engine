@@ -28,7 +28,7 @@ public:
 };
 
 static unsigned int winCount = 0;
-static void initialize()
+static void initializeGLFW()
 {
     if(winCount++ == 0)
     {
@@ -37,7 +37,7 @@ static void initialize()
     }
 }
 
-static void terminate()
+static void terminateGLFW()
 {
     if(--winCount == 0)
     {
@@ -126,13 +126,13 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
                                 		   lastCursorX(0.0f), lastCursorY(0.0f)
 {
 	// Initialize GLFW
-    initialize();
+    initializeGLFW();
     // Scope guard to terminate GLFW if a window creation error occurs
     bool shouldTerminate = true;
     BOOST_SCOPE_EXIT(&shouldTerminate)
     {
         if(shouldTerminate)
-            terminate();
+            terminateGLFW();
     } BOOST_SCOPE_EXIT_END
 
 	// Set our window hints
@@ -221,7 +221,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
 GLFWRenderWindow::~GLFWRenderWindow()
 {
     glfwDestroyWindow(handle);
-    terminate();
+    terminateGLFW();
     delete context;
 }
 
