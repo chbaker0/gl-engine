@@ -5,8 +5,8 @@
  *      Author: Collin
  */
 
-#ifndef ALIGNED_WRITER_H_INCLUDED
-#define ALIGNED_WRITER_H_INCLUDED
+#ifndef BUFFER_UTILS_ALIGNED_WRITER_H_INCLUDED
+#define BUFFER_UTILS_ALIGNED_WRITER_H_INCLUDED
 
 #include <functional>
 #include <cstddef>
@@ -165,4 +165,4 @@ public:
 	}
 };
 
-#endif /* ALIGNED_WRITER_H_INCLUDED */
+#endif /* BUFFER_UTILS_ALIGNED_WRITER_H_INCLUDED */

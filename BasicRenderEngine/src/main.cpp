@@ -25,7 +25,7 @@
 #include "Camera.h"
 
 #include "Utilities.h"
-#include "Utilities/AlignedWriter.h"
+#include "BufferUtils/AlignedWriter.h"
 
 #include "Messaging/Listener.h"
 #include "Messaging/KeyMessage.h"
