@@ -28,6 +28,9 @@ public:
 	GLBuffer& getBuffer() noexcept {return *buffer;}
 	const GLBuffer& getBuffer() const noexcept {return *buffer;}
 
+	GLsizeiptr getOffset() const noexcept {return offset;}
+	GLsizeiptr getSize() const noexcept {return size;}
+
 	void bindBase(GLUniformBlockBinding index) noexcept
 	{
 		buffer->bindRange(index, offset, size);
@@ -90,6 +93,10 @@ public:
 	void flushRange(GLintptr viewOffset, GLsizeiptr size) noexcept
 	{
 		buffer->flushRange(offset + viewOffset, size);
+	}
+	void unmap()
+	{
+		buffer->unmap();
 	}
 };
 

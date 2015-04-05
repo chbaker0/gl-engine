@@ -27,6 +27,8 @@
 #include "Utilities.h"
 #include "BufferUtils/AlignedWriter.h"
 
+#include "Model/Mesh.h"
+
 #include "Messaging/Listener.h"
 #include "Messaging/KeyMessage.h"
 #include "Messaging/MouseMessage.h"
@@ -71,45 +73,49 @@ try
 	context->srgbWriteEnabled(true);
 
 	// Vertices for a square specified clockwise from top left
-	const float testSquareTriPos[] =
+	const float testSquareTriAttribs[] =
 	{
-	 -0.5, 0.5, 0.0, 1.0,	// 0
-	 0.5, 0.5, 0.0, 1.0,		// 1
-	 0.5, -0.5, 0.0, 1.0,	// 2
-	 -0.5, -0.5, 0.0, 1.0	// 3
+	 -0.5, 0.5, 0.0, 1.0,	0.0f, 0.0f,	// 0
+	 0.5, 0.5, 0.0, 1.0,	0.0f, 1.0f,		// 1
+	 0.5, -0.5, 0.0, 1.0,	1.0f, 1.0f,	// 2
+	 -0.5, -0.5, 0.0, 1.0,	1.0f, 0.0f	// 3
 	};
-	const float testSquareTriUV[] =
-	{
-	 0.0f, 0.0f,
-	 0.0f, 1.0f,
-	 1.0f, 1.0f,
-	 1.0f, 0.0f
-	};
-	// Triangle fan indices for square, CCW
-	const GLushort testSquareInd[] = {0, 3, 2, 1};
+	// Triangle indices for square, CCW
+	const GLushort testSquareInd[] = {0, 1, 3, 3, 2, 1};
 
 	// Load square vertices and indices into buffer
-	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTriPos) + sizeof(testSquareTriUV) + sizeof(testSquareInd), nullptr);
+	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, sizeof(testSquareTriAttribs) + sizeof(testSquareInd), nullptr);
 
+	GLMappableBufferView bufferVertexView(buffer.get(), 0, sizeof(testSquareTriAttribs));
+	GLMappableBufferView bufferIndexView(buffer.get(), sizeof(testSquareTriAttribs), sizeof(testSquareInd));
+
+	MeshVertexAttribDescriptor squareAttribDesc[] =
 	{
-		GLBufferMapping map = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
-		void *raw = map.getMapPtr();
-		memcpy(raw, testSquareTriPos, sizeof(testSquareTriPos));
-		raw = static_cast<char*>(raw) + sizeof(testSquareTriPos);
-		memcpy(raw, testSquareTriUV, sizeof(testSquareTriUV));
-		raw = static_cast<char*>(raw) + sizeof(testSquareTriUV);
-		memcpy(raw, testSquareInd, sizeof(testSquareInd));
-	}
+	 {GLVertexArrayObject::Position, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0},
+	 {GLVertexArrayObject::TexCoord, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, sizeof(float) * 4}
+	};
+	Mesh squareMesh = loadMeshFromMem(context, testSquareTriAttribs, squareAttribDesc, 2, 4,
+	                                  testSquareInd, GL_UNSIGNED_SHORT, 6, GL_TRIANGLES,
+	                                  bufferVertexView, bufferIndexView);
+//	{
+//		GLBufferMapping map = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
+//		void *raw = map.getMapPtr();
+//		memcpy(raw, testSquareTriAttribs, sizeof(testSquareTriAttribs));
+//		raw = static_cast<char*>(raw) + sizeof(testSquareTriAttribs);
+//		memcpy(raw, testSquareInd, sizeof(testSquareInd));
+//	}
+//
+//	std::shared_ptr<GLVertexArrayObject> vao = context->getVertexArrayObject();
+//	vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, sizeof(float) * 6, 0);
+//	vao->setAttrib(2, *buffer, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void*) (sizeof(float) * 4));
+//	vao->setElementArrayBinding(*buffer);
+//
+//	Mesh squareMesh(vao, GL_TRIANGLES, GL_UNSIGNED_SHORT, sizeof(testSquareTriAttribs), 6);
 
 	auto squareUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_STREAM_DRAW, 256, nullptr);
 	auto globalUniformBuffer = context->getMutableBuffer(GL_UNIFORM_BUFFER, GL_DYNAMIC_DRAW, 256, nullptr);
 	globalUniformBuffer->bindBase(GLUniformBlockBinding::GlobalBlock);
 	squareUniformBuffer->bindBase(GLUniformBlockBinding::ModelBlock);
-
-	auto vao = context->getVertexArrayObject();
-	vao->setAttrib(0, *buffer, 4, GL_FLOAT, GL_FALSE, 0, 0);
-	vao->setAttrib(1, *buffer, 2, GL_FLOAT, GL_FALSE, 0, (const void*) sizeof(testSquareTriPos));
-	vao->setElementArrayBinding(*buffer);
 
 	std::unique_ptr<GLShaderProgram> vertProg, fragProg;
 
@@ -138,8 +144,11 @@ try
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::GlobalBlock, GLUniformBlockBinding::GlobalBlock);
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::ModelBlock, GLUniformBlockBinding::ModelBlock);
 
-	auto squareDrawCommand = unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(vao.get(), pipeline.get(), 4, GL_TRIANGLE_FAN,
-	                                                                                   (void*)(sizeof(testSquareTriPos) + sizeof(testSquareTriUV)), GL_UNSIGNED_SHORT));
+	auto squareDrawCommand =
+			unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(squareMesh.getVao(), pipeline.get(), squareMesh.getIndexCount(), squareMesh.getPrimType(),
+	                                                                  (const void*) squareMesh.getIndexOffset(), squareMesh.getIndexType()));
+
+	cout << squareMesh.getIndexCount() << ' ' << squareMesh.getPrimType() << ' ' << squareMesh.getIndexOffset() << ' ' << squareMesh.getIndexType() << endl;
 
 	context->faceCullingEnabled(false);
 	context->depthTestEnabled(true);
