@@ -20,8 +20,10 @@ protected:
 public:
 	enum Attribute
 	{
-		PositionAttrib = 0,
-		NormalAttrib
+		Position = 0,
+		Normal,
+		TexCoord,
+		AttributeCount
 	};
 
 	GLVertexArrayObject(GLuint handle_in): handle(handle_in) {}
