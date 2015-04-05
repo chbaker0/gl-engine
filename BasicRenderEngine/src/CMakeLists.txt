@@ -16,6 +16,7 @@ list(APPEND SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Utilities.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Messaging/MessageAllocators.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Messaging/Subject.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/BufferUtils/GLBufferView.cpp
 )
 
 set(SOURCES "${SOURCES}" PARENT_SCOPE)
