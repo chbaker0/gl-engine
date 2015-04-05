@@ -8,18 +8,21 @@
 #ifndef BUFFER_UTILS_GL_BUFFER_VIEW_H_INCLUDED
 #define BUFFER_UTILS_GL_BUFFER_VIEW_H_INCLUDED
 
+#include <memory>
+
 #include <GL/glew.h>
 
 #include "GLBuffer.h"
 
-class GLBufferView
+template <typename GLBufferPtr>
+class GLBufferViewImpl
 {
 protected:
-	GLBuffer *buffer;
+	GLBufferPtr buffer;
 	GLsizeiptr offset, size;
 
 public:
-	GLBufferView(GLBuffer *buffer_in, GLsizeiptr offset_in, GLsizeiptr size_in):
+	GLBufferViewImpl(GLBuffer *buffer_in, GLsizeiptr offset_in, GLsizeiptr size_in):
 		buffer(buffer_in), offset(offset_in), size(size_in) {}
 
 	GLBuffer& getBuffer() noexcept {return *buffer;}
@@ -44,41 +47,48 @@ public:
 	}
 };
 
-class GLMappableBufferView : public GLBufferView
+using GLBufferView = GLBufferViewImpl<GLBuffer*>;
+using GLBufferSharedView = GLBufferViewImpl<std::shared_ptr<GLBuffer*>>;
+
+template <typename GLMappableBufferPtr>
+class GLMappableBufferViewImpl : public GLBufferViewImpl<GLMappableBufferPtr>
 {
 public:
-	GLMappableBufferView(GLMappableBuffer *buffer_in, GLsizeiptr offset_in, GLsizeiptr size_in):
-		GLBufferView(buffer_in, offset_in, size_in) {}
+	GLMappableBufferViewImpl(GLMappableBufferPtr buffer_in, GLsizeiptr offset_in, GLsizeiptr size_in):
+		GLBufferViewImpl(buffer_in, offset_in, size_in) {}
 
 	bool isReadable() const noexcept
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->isReadable();
+		return buffer->isReadable();
 	}
 	bool isWritable() const noexcept
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->isWritable();
+		return buffer->isWritable();
 	}
 	bool isPersistent() const noexcept
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->isPersistent();
+		return buffer->isPersistent();
 	}
 	bool isCoherent() const noexcept
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->isCoherent();
+		return buffer->isCoherent();
 	}
 
 	void* mapRangeRaw(GLintptr viewOffset, GLsizeiptr size, GLbitfield access)
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->mapRangeRaw(offset + viewOffset, size, access);
+		return buffer->mapRangeRaw(offset + viewOffset, size, access);
 	}
 	GLBufferMapping mapRange(GLintptr viewOffset, GLsizeiptr size, GLbitfield access)
 	{
-		return static_cast<GLMappableBuffer*>(buffer)->mapRange(offset + viewOffset, size, access);
+		return buffer->mapRange(offset + viewOffset, size, access);
 	}
 	void flushRange(GLintptr viewOffset, GLsizeiptr size) noexcept
 	{
-		static_cast<GLMappableBuffer*>(buffer)->flushRange(offset + viewOffset, size);
+		buffer->flushRange(offset + viewOffset, size);
 	}
 };
+
+using GLMappableBufferView = GLMappableBufferViewImpl<GLMappableBuffer*>;
+using GLMappableBufferSharedView = GLMappableBufferViewImpl<std::shared_ptr<GLMappableBuffer>>;
 
 #endif /* BUFFER_UTILS_GL_BUFFER_VIEW_H_INCLUDED */
