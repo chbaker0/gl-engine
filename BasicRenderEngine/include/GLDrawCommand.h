@@ -17,22 +17,17 @@ class GLDrawCommand
 {
 protected:
 	GLVertexArrayObject *vao;
-	GLExecutable *shaderExe;
 	GLsizei elementCount;
 	GLenum primType;
 
 public:
-	GLDrawCommand(GLVertexArrayObject *vao_in, GLExecutable *shaderExe_in, GLsizei elementCount_in, GLenum primType_in):
-		vao(vao_in), shaderExe(shaderExe_in), elementCount(elementCount_in), primType(primType_in) {}
+	GLDrawCommand(GLVertexArrayObject *vao_in, GLsizei elementCount_in, GLenum primType_in):
+		vao(vao_in), elementCount(elementCount_in), primType(primType_in) {}
 	virtual void draw(GLContext *context) = 0;
 
 	GLVertexArrayObject* getVao() const
 	{
 		return vao;
-	}
-	GLExecutable* getShaderExe() const
-	{
-		return shaderExe;
 	}
 	GLsizei getElementCount() const
 	{

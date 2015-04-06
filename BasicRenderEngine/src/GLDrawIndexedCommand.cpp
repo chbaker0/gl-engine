@@ -10,7 +10,6 @@
 
 void GLDrawIndexedCommand::draw(GLContext *context)
 {
-	context->useExecutable(shaderExe);
 	context->useVao(vao);
 	glDrawElements(primType, elementCount, indexType, indexOffset);
 }

@@ -75,10 +75,10 @@ try
 	// Vertices for a square specified clockwise from top left
 	const float testSquareTriAttribs[] =
 	{
-	 -0.5, 0.5, 0.0, 1.0,	0.0f, 0.0f,	// 0
+	 -0.5, 0.5, 0.0, 1.0,	0.0f, 0.0f,		// 0
 	 0.5, 0.5, 0.0, 1.0,	0.0f, 1.0f,		// 1
-	 0.5, -0.5, 0.0, 1.0,	1.0f, 1.0f,	// 2
-	 -0.5, -0.5, 0.0, 1.0,	1.0f, 0.0f	// 3
+	 0.5, -0.5, 0.0, 1.0,	1.0f, 1.0f,		// 2
+	 -0.5, -0.5, 0.0, 1.0,	1.0f, 0.0f		// 3
 	};
 	// Triangle indices for square, CCW
 	const GLushort testSquareInd[] = {0, 1, 3, 3, 2, 1};
@@ -145,7 +145,7 @@ try
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::ModelBlock, GLUniformBlockBinding::ModelBlock);
 
 	auto squareDrawCommand =
-			unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(squareMesh.getVao(), pipeline.get(), squareMesh.getIndexCount(), squareMesh.getPrimType(),
+			unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(squareMesh.getVao(), squareMesh.getIndexCount(), squareMesh.getPrimType(),
 	                                                                  (const void*) squareMesh.getIndexOffset(), squareMesh.getIndexType()));
 
 	cout << squareMesh.getIndexCount() << ' ' << squareMesh.getPrimType() << ' ' << squareMesh.getIndexOffset() << ' ' << squareMesh.getIndexType() << endl;
@@ -411,6 +411,7 @@ try
 			modelWriter.write<AlignedWriterLayoutSTD140>(modelBlock);
 		}
 
+		context->useExecutable(pipeline.get());
 		if(useSRGBTexture)
 			context->bindTexture(0, testTextureSRGB.get());
 		else
@@ -437,8 +438,8 @@ catch(std::exception& e)
 
 std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
 {
-	unsigned int x = 800, y = 600;
-	bool fullscreen = false;
+	unsigned int x = 0, y = 0;
+	bool fullscreen = true;
 
 	if(argc >= 3)
 	{
@@ -449,10 +450,12 @@ std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
 	{
 		if(argv[3][0] == 'f' || argv[3][0] == 'F')
 			fullscreen = true;
+		else if(argv[3][0] == 'w' || argv[3][0] == 'W')
+			fullscreen = false;
 	}
 
 	GLRenderWindowCreator creator;
-	creator.hintGLVersion(4, 4);
+	creator.hintGLVersion(4, 2);
 	creator.hintDebug(true);
 	creator.hintFullscreen(fullscreen);
 	creator.hintSize(x, y);

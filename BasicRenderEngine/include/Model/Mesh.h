@@ -74,4 +74,6 @@ Mesh loadMeshFromMem(GLContext *context, const void *vertexData, MeshVertexAttri
                      const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType,
                      GLMappableBufferView &vertexBuffer, GLMappableBufferView &indexBuffer);
 
+Mesh loadMeshFromFile(GLContext *context, std::string filename, std::unique_ptr<GLMappableBuffer>& buffer);
+
 #endif /* MODEL_MESH_H_INCLUDED */
