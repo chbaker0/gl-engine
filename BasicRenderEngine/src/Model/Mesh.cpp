@@ -6,6 +6,10 @@
  */
 
 #include <iostream>
+#include <map>
+#include <unordered_map>
+#include <memory>
+#include <utility>
 
 #include <stdexcept>
 
@@ -14,6 +18,12 @@
 #include <cstring>
 
 #include "Model/Mesh.h"
+
+void Mesh::draw(GLContext& context)
+{
+	context.useVao(vao.get());
+	glDrawElements(primType, indexCount, indexType, (void*) indexOffset);
+}
 
 unsigned int getTypeSize(GLenum type)
 {
@@ -30,14 +40,65 @@ unsigned int getTypeSize(GLenum type)
 	}
 }
 
-Mesh loadMeshFromMem(GLContext *context, const void *vertexData, MeshVertexAttribDescriptor *attribs, unsigned int attribCount, GLsizei vertexCount,
-                     const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType,
-                     GLMappableBufferView& vertexBuffer, GLMappableBufferView& indexBuffer)
-{
-	std::shared_ptr<GLVertexArrayObject> meshVao = context->getVertexArrayObject();
+///*class MeshBufferManager
+//{
+//private:
+//	// Buffer pointer and ref count
+//	std::map<GLMappableBuffer*, unsigned int> bufferPool;
+//	GLContext *context;
+//
+//public:
+//	class MeshBufferView
+//	{
+//	private:
+//		GLMappableBufferView *bufferView;
+//		MeshBufferManager *manager;
+//
+//	public:
+//		MeshBufferView(GLMappableBufferView *bufferView_in, MeshBufferManager *manager_in):
+//			bufferView(bufferView_in), manager(manager_in) {}
+//		~MeshBufferView()
+//		{
+//			auto p = manager->bufferPool.find(&(bufferView->getBuffer()));
+//			if(--(p->second) == 0)
+//			{
+//				auto ptr = p->first;
+//				manager->bufferPool.erase(p);
+//				delete ptr;
+//			}
+//		}
+//
+//		GLMappableBufferView* getBufferView()
+//		{
+//			return bufferView;
+//		}
+//	};
+//
+//	MeshBufferManager(GLContext *context_in): context(context_in) {}
+//
+//	MeshBufferView getBufferView(GLsizei size)
+//	{
+//		// Later will do some actual management. For now, just allocate a buffer every call:
+//		auto p = bufferPool.emplace(context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, size, nullptr).release(), 1);
+//		assert(("wat", p.second));
+//		return MeshBufferView(new GLMappableBufferView(p.first, 0, size), this);
+//	}
+//};*/
 
-	assert(vertexBuffer.isWritable());
-	assert(indexBuffer.isWritable());
+Mesh loadMeshFromMem(GLContext *context, const void *vertexData, MeshVertexAttribDescriptor *attribs, unsigned int attribCount, GLsizei vertexCount,
+                     const void *indexData, GLenum indexType, GLsizei indexCount, std::size_t maxIndex, GLenum primType)
+{
+//	static std::unordered_map<GLContext*, MeshBufferManager> contextManagerMap;
+
+	std::size_t bufferSize = 0;
+	for(unsigned int i = 0; i < attribCount; ++i)
+	{
+		std::size_t attribSize =
+				attribs[i].offset + attribs[i].
+	}
+
+	std::shared_ptr<GLVertexArrayObject> meshVao = context->getVertexArrayObject();
+	std::shared_ptr<G>
 	{
 		auto vertexMap = vertexBuffer.mapRange(0, vertexBuffer.getSize(), GL_MAP_WRITE_BIT);
 		char *vertexMapPtr = (char*) vertexMap.getMapPtr();

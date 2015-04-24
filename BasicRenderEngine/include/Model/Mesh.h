@@ -18,6 +18,7 @@ class Mesh
 {
 private:
 	std::shared_ptr<GLVertexArrayObject> vao;
+	std::shared_ptr<GLBuffer> buffer;
 	GLenum primType;
 	GLenum indexType;
 	GLsizeiptr indexOffset;
@@ -25,9 +26,10 @@ private:
 
 public:
 	Mesh(std::shared_ptr<GLVertexArrayObject> vao_in,
+	     std::shared_ptr<GLBuffer> buffer_in,
 	     GLenum primType_in, GLenum indexType_in,
 	     GLsizeiptr indexOffset_in, GLsizeiptr indexCount_in):
-		vao(vao_in), primType(primType_in), indexType(indexType_in),
+		buffer(buffer_in), vao(vao_in), primType(primType_in), indexType(indexType_in),
 		indexOffset(indexOffset_in), indexCount(indexCount_in) {}
 
 	GLsizeiptr getIndexCount() const
@@ -58,6 +60,17 @@ public:
 	{
 		return vao.get();
 	}
+
+	const GLBuffer* getBuffer() const
+	{
+		return buffer.get();
+	}
+	GLBuffer* getBuffer()
+	{
+		return buffer.get();
+	}
+
+	void draw(GLContext& context);
 };
 
 struct MeshVertexAttribDescriptor
@@ -71,8 +84,7 @@ struct MeshVertexAttribDescriptor
 };
 
 Mesh loadMeshFromMem(GLContext *context, const void *vertexData, MeshVertexAttribDescriptor *attribs, unsigned int attribCount, GLsizei vertexCount,
-                     const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType,
-                     GLMappableBufferView &vertexBuffer, GLMappableBufferView &indexBuffer);
+                     const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType);
 
 Mesh loadMeshFromFile(GLContext *context, std::string filename, std::unique_ptr<GLMappableBuffer>& buffer);
 

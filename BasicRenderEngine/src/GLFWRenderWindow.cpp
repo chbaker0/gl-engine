@@ -157,10 +157,19 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
     // Set a debug context if asked
     if(debug)
         glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+
+	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
+	const GLFWgammaramp *ramp = glfwGetGammaRamp(monitor);
+	std::cout << "Gamma ramp:";
+	for(unsigned int i = 0; i < ramp->size; ++i)
+	{
+		std::cout << "\n(" << ramp->red[i] << ", " << ramp->green[i] << ", " << ramp->blue[i] << ')';
+	}
+	std::cout << std::endl;
+
     // Create window, throw exception if failed
     if(fullscreen)
     {
-    	GLFWmonitor *monitor = glfwGetPrimaryMonitor();
     	if(monitor == nullptr)
     		throw GLFWRenderWindowException("Could not get handle to monitor");
     	if(xSize == 0 || ySize == 0)
@@ -215,10 +224,11 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
     // Create a GLFWWindowContext
     context = new GLFWWindowContext44(handle);
     // Enable debug callback if asked
-    if(debug)
+    if(debug && (GLEW_VERSION_4_3 || GLEW_KHR_debug))
     {
     	glEnable(GL_DEBUG_OUTPUT);
     	glDebugMessageCallback(debugCallback, nullptr);
+    	std::cout << "OpenGL debugging enabled" << std::endl;
     }
 
     // Disable action in our scope guard

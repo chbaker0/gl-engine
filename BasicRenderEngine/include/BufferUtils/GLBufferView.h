@@ -65,6 +65,9 @@ public:
 	GLMappableBufferViewImpl(GLMappableBufferPtr buffer_in, GLsizeiptr offset_in, GLsizeiptr size_in):
 		GLBufferViewImpl<GLMappableBufferPtr>(buffer_in, offset_in, size_in) {}
 
+	GLMappableBuffer& getBuffer() noexcept {return static_cast<GLMappableBuffer&>(*buffer);}
+	const GLMappableBuffer& getBuffer() const noexcept {return static_cast<GLMappableBuffer&>(*buffer);}
+
 	bool isReadable() const noexcept
 	{
 		return buffer->isReadable();

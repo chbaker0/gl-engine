@@ -286,16 +286,16 @@ try
 //	 0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 0.0f, 1.0f,
 //	 0.0f, 0.5f, 0.0f, 1.0f, 0.5f, 0.0f, 0.0f, 1.0f
 //	};
-	vector<float> texData;
+	vector<unsigned char> texData;
 	const unsigned int colorBlocks = 5;
 	for(unsigned int i = 0; i < colorBlocks; ++i)
 	{
 		for(unsigned int j = 0; j < 3; ++j)
-			texData.push_back((float) i / (float) (colorBlocks-1.0f));
-		texData.push_back(1.0f);
+			texData.push_back(255*i/(colorBlocks-1));
+		texData.push_back(255);
 	}
-	auto testTexture = context->getTexture2D(0, true, GL_RGB8, colorBlocks, 1, GL_RGBA, GL_FLOAT, &texData[0]);
-	auto testTextureSRGB = context->getTexture2D(0, true, GL_SRGB8, colorBlocks, 1, GL_RGBA, GL_FLOAT, &texData[0]);
+	auto testTexture = context->getTexture2D(0, true, GL_RGB8, colorBlocks, 1, GL_RGBA, GL_UNSIGNED_BYTE, &texData[0]);
+	auto testTextureSRGB = context->getTexture2D(0, true, GL_SRGB8, colorBlocks, 1, GL_RGBA, GL_UNSIGNED_BYTE, &texData[0]);
 
 	auto testSampler = context->getSampler();
 	testSampler->setMagFilter(GL_NEAREST);
@@ -438,8 +438,8 @@ catch(std::exception& e)
 
 std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
 {
-	unsigned int x = 0, y = 0;
-	bool fullscreen = true;
+	unsigned int x = 800, y = 600;
+	bool fullscreen = false;
 
 	if(argc >= 3)
 	{
