@@ -95,8 +95,7 @@ try
 	 {GLVertexArrayObject::TexCoord, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 6, sizeof(float) * 4}
 	};
 	Mesh squareMesh = loadMeshFromMem(context, testSquareTriAttribs, squareAttribDesc, 2, 4,
-	                                  testSquareInd, GL_UNSIGNED_SHORT, 6, GL_TRIANGLES,
-	                                  bufferVertexView, bufferIndexView);
+	                                  testSquareInd, GL_UNSIGNED_SHORT, 6, GL_TRIANGLES);
 //	{
 //		GLBufferMapping map = buffer->mapRange(0, buffer->getSize(), GL_MAP_WRITE_BIT);
 //		void *raw = map.getMapPtr();

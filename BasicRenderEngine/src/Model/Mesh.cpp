@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <memory>
 #include <utility>
+#include <algorithm>
 
 #include <stdexcept>
 
@@ -21,7 +22,7 @@
 
 void Mesh::draw(GLContext& context)
 {
-	context.useVao(vao.get());
+	context.useVao(vertexData->getVAO());
 	glDrawElements(primType, indexCount, indexType, (void*) indexOffset);
 }
 
@@ -85,54 +86,98 @@ unsigned int getTypeSize(GLenum type)
 //	}
 //};*/
 
-Mesh loadMeshFromMem(GLContext *context, const void *vertexData, MeshVertexAttribDescriptor *attribs, unsigned int attribCount, GLsizei vertexCount,
-                     const void *indexData, GLenum indexType, GLsizei indexCount, std::size_t maxIndex, GLenum primType)
+// Can be extended for sharing VAOs and VBOs later. For now... just this
+class MeshVertexDataFromMem : public MeshVertexData
 {
-//	static std::unordered_map<GLContext*, MeshBufferManager> contextManagerMap;
+public:
+	std::unique_ptr<GLBuffer> buf;
+	std::unique_ptr<GLVertexArrayObject> vao;
 
-	std::size_t bufferSize = 0;
-	for(unsigned int i = 0; i < attribCount; ++i)
+	MeshVertexDataFromMem(std::unique_ptr<GLBuffer> buf_in, std::unique_ptr<GLVertexArrayObject> vao_in):
+		buf(std::move(buf_in)), vao(std::move(vao_in)) {}
+
+	virtual void release(GLsizeiptr, GLsizeiptr)
 	{
-		std::size_t attribSize =
-				attribs[i].offset + attribs[i].
+		delete this;	// Evil voodoo
 	}
 
-	std::shared_ptr<GLVertexArrayObject> meshVao = context->getVertexArrayObject();
-	std::shared_ptr<G>
+	virtual GLVertexArrayObject* getVAO()
 	{
-		auto vertexMap = vertexBuffer.mapRange(0, vertexBuffer.getSize(), GL_MAP_WRITE_BIT);
-		char *vertexMapPtr = (char*) vertexMap.getMapPtr();
-		for(unsigned int a = 0; a < attribCount; ++a)
+		return vao.get();
+	}
+	virtual GLBuffer* getBuffer()
+	{
+		return buf.get();
+	}
+};
+
+constexpr std::size_t alignedOffsetPow2(std::size_t offset, std::size_t alignment)
+{
+	return (offset + alignment - 1) & ~(alignment - 1);
+}
+
+Mesh loadMeshFromMem(GLContext *context, const void *vertexData, const MeshVertexAttribDescriptor *attribs, unsigned int attribCount,GLsizei vertexCount,
+                     const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType)
+{
+	constexpr std::size_t MIN_ALIGNMENT = 4;
+
+	auto *sortedAttribs = new MeshVertexAttribDescriptor[attribCount];
+	std::copy(attribs, attribs + attribCount, sortedAttribs);
+	std::sort(sortedAttribs, sortedAttribs + attribCount,
+	          [](const MeshVertexAttribDescriptor &lhs,
+					const MeshVertexAttribDescriptor &rhs)
+				{
+					return lhs.attrib < rhs.attrib;
+				});
+
+	std::size_t calculatedSize = 0;
+	for(unsigned int i = 0; i < attribCount; ++i)
+	{
+		calculatedSize += attribs[i].size * getTypeSize(attribs[i].type) * vertexCount;
+		calculatedSize = alignedOffsetPow2(calculatedSize, MIN_ALIGNMENT);
+	}
+
+	std::vector<std::size_t> offsets(attribCount);
+
+	std::unique_ptr<char[]> tempBuffer(new char[calculatedSize + indexCount * getTypeSize(indexType)]);
+	char *head = tempBuffer.get();
+
+	for(unsigned int i = 0; i < attribCount; ++i)
+	{
+		std::size_t offset = head - tempBuffer.get();
+		offset = alignedOffsetPow2(offset, MIN_ALIGNMENT);
+		offsets[i] = offset;
+		head = tempBuffer.get() + offset;
+
+		const char *vertexDataHead = static_cast<const char*>(vertexData) + sortedAttribs[i].offset;
+		const std::size_t attribByteSize = sortedAttribs[i].size * getTypeSize(sortedAttribs[i].type);
+		const std::size_t stride = sortedAttribs[i].stride == 0 ? sortedAttribs[i].size : sortedAttribs[i].stride;
+
+		assert(head < tempBuffer.get() + calculatedSize);
+
+		for(GLsizei v = 0; v < vertexCount; ++v)
 		{
-			auto attribTypeSize = getTypeSize(attribs[a].type);
-
-			char *readPtr = (char*) vertexData + attribs[a].offset;
-			char *writePtr = (char*) vertexMapPtr + attribs[a].offset;
-
-			for(unsigned int v = 0; v < vertexCount; ++v)
-			{
-				assert((writePtr + attribs[a].size - vertexMapPtr) <= vertexBuffer.getSize());
-				std::memcpy(writePtr, readPtr, attribs[a].size * attribTypeSize);
-				writePtr += attribs[a].stride;
-				readPtr += attribs[a].stride;
-			}
+			std::memcpy(head, vertexDataHead, attribByteSize);
+			vertexDataHead += stride;
+			head += attribByteSize;
 		}
 	}
 
-	for(unsigned int a = 0; a < attribCount; ++a)
+	std::memcpy(tempBuffer.get() + calculatedSize, indexData, indexCount * getTypeSize(indexType));
+
+	auto buffer = context->getMutableBuffer(GL_ARRAY_BUFFER, GL_STATIC_DRAW, calculatedSize + indexCount * getTypeSize(indexType), tempBuffer.get());
+	tempBuffer.reset(nullptr);
+	auto vao = context->getVertexArrayObject();
+
+	for(unsigned int i = 0; i < attribCount; ++i)
 	{
-		meshVao->setAttrib(attribs[a].attrib, vertexBuffer.getBuffer(),
-		                   attribs[a].size, attribs[a].type, attribs[a].normalize,
-		                   attribs[a].stride, (char*)attribs[a].offset + vertexBuffer.getOffset());
+		vao->setAttrib(sortedAttribs[i].attrib, *buffer.get(), sortedAttribs[i].size, sortedAttribs[i].type, sortedAttribs[i].normalize, 0, (void*)offsets[i]);
 	}
 
-	{
-		auto indexMap = indexBuffer.mapRange(0, indexBuffer.getSize(), GL_MAP_WRITE_BIT);
-		auto indexTypeSize = getTypeSize(indexType);
-		std::memcpy(indexMap.getMapPtr(), indexData, indexTypeSize * indexCount);
-	}
+	vao->setElementArrayBinding(*buffer.get());
 
-	meshVao->setElementArrayBinding(indexBuffer.getBuffer());
+	MeshVertexDataFromMem *meshVertexData =
+			new MeshVertexDataFromMem(std::move(buffer), std::move(vao));
 
-	return Mesh(meshVao, primType, indexType, indexBuffer.getOffset(), indexCount);
+	return Mesh(meshVertexData, primType, indexType, calculatedSize, indexCount);
 }
