@@ -46,8 +46,8 @@
 								<option id="gnu.cpp.compiler.option.dialect.flags.836655640" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.debugging.gprof.1388939363" name="Generate gprof information (-pg)" superClass="gnu.cpp.compiler.option.debugging.gprof" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.1533254242" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.785992990" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1143944507" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.785992990" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1143944507" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.876137247" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.881637389" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug">
@@ -66,7 +66,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.1985888884" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
-									<listOptionValue builtIn="false" value="${assimp_library_dir}"/>
+									<listOptionValue builtIn="false" value="${assimp_library}"/>
 									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
@@ -129,8 +129,8 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.flags.1758703264" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.1790372882" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.380866835" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.803405455" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.380866835" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.803405455" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1489276053" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool command="gcc" commandLinePattern="${COMMAND} ${FLAGS} ${OUTPUT_FLAG} ${OUTPUT_PREFIX}${OUTPUT} ${INPUTS}" errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release.1686966223" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release">
@@ -218,8 +218,8 @@
 								<option id="gnu.cpp.compiler.option.debugging.prof.950448576" name="Generate prof information (-p)" superClass="gnu.cpp.compiler.option.debugging.prof" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.debugging.codecov.1406071408" name="Generate gcov information (-ftest-coverage -fprofile-arcs)" superClass="gnu.cpp.compiler.option.debugging.codecov" value="false" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.276212802" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.1571558963" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.382809667" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.1571558963" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.382809667" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.201149430" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug.1385286554" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.debug">
@@ -238,7 +238,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.48274937" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
-									<listOptionValue builtIn="false" value="${assimp_library_dir}"/>
+									<listOptionValue builtIn="false" value="${assimp_library}"/>
 									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
@@ -303,8 +303,8 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.flags.458405064" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" useByScannerDiscovery="true" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.optimization.flags.97717058" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
-								<option id="gnu.cpp.compiler.option.warnings.pedantic.46662431" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1910226511" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.pedantic.46662431" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
+								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1910226511" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1082585110" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
 							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release.1276397040" name="GCC C Compiler" superClass="cdt.managedbuild.tool.gnu.c.compiler.mingw.exe.release">
@@ -322,7 +322,7 @@
 								</option>
 								<option id="gnu.cpp.link.option.libs.1252942131" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" value="${opengl_dependency_libraries}"/>
-									<listOptionValue builtIn="false" value="${assimp_library_dir}"/>
+									<listOptionValue builtIn="false" value="${assimp_library}"/>
 									<listOptionValue builtIn="false" value="${boost_system_library}"/>
 									<listOptionValue builtIn="false" value="${glew_library}"/>
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
