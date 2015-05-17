@@ -11,23 +11,26 @@
 #include <vector>
 
 #include <GL/glew.h>
+#include <glm/glm.hpp>
 
 #include "GLExecutable.h"
 #include "GLBlockBinding.h"
 
-enum class GLProgramUniformBlockIndex
+enum class GLProgramUniformBlockIndex : unsigned int
 {
 	GlobalBlock = 0,
-	ModelBlock
+	ModelBlock,
+	ElementCount
 };
 
 class GLShaderProgram : public GLExecutable
 {
 protected:
 	GLuint handle;
+	GLuint blockIndices[(unsigned int)GLProgramUniformBlockIndex::ElementCount];
 
 public:
-	GLShaderProgram(GLuint handle_in): handle(handle_in) {}
+	GLShaderProgram(GLuint handle_in);
 	virtual ~GLShaderProgram();
 
 	GLuint getHandle() const noexcept
@@ -36,6 +39,10 @@ public:
 	}
 	virtual void use() noexcept override;
 
+	virtual GLint getUniformLocation(const char *name);
+
+	virtual void setUniform(GLint location, GLint data);
+	virtual void setUniform(GLint location, GLuint data);
 	virtual void setUniformBlockBinding(GLProgramUniformBlockIndex index, GLUniformBlockBinding binding) noexcept;
 };
 

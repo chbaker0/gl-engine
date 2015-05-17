@@ -146,6 +146,8 @@ try
 
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::GlobalBlock, GLUniformBlockBinding::GlobalBlock);
 	vertProg->setUniformBlockBinding(GLProgramUniformBlockIndex::ModelBlock, GLUniformBlockBinding::ModelBlock);
+	GLint diffuseLocation = fragProg->getUniformLocation("diffuse");
+	fragProg->setUniform(diffuseLocation, 0);
 
 	auto squareDrawCommand =
 			unique_ptr<GLDrawIndexedCommand>(new GLDrawIndexedCommand(squareMesh.getVao(), squareMesh.getIndexCount(), squareMesh.getPrimType(),
@@ -463,8 +465,8 @@ std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
 	}
 
 	GLRenderWindowCreator creator;
-	creator.hintGLVersion(4, 3);
-	creator.hintDebug(false);
+	creator.hintGLVersion(4, 0);
+	creator.hintDebug(true);
 	creator.hintFullscreen(fullscreen);
 	creator.hintSize(x, y);
 	creator.hintTitle("Test Window");

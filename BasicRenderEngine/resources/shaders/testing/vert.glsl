@@ -1,14 +1,14 @@
-#version 430
+#version 400
 
 layout (location = 0) in vec4 position;
 layout (location = 2) in vec2 texCoord;
 
-layout (std140, binding = 0) uniform GlobalBlock
+layout (std140) uniform GlobalBlock
 {
     mat4 cameraClipMat;
     float time;
 };
-layout (std140, binding = 1) uniform ModelBlock
+layout (std140) uniform ModelBlock
 {
     mat4 modelCameraMat;
     vec3 color;

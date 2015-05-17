@@ -143,6 +143,8 @@ static std::pair<unsigned int, unsigned int> getVersion()
 		return std::make_pair(4, 0);
 }
 
+static std::ofstream debugLogFile;
+
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool fullscreen,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
                                    const char *title, bool debug, bool srgb):
@@ -246,6 +248,7 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
     {
     	glEnable(GL_DEBUG_OUTPUT);
     	glDebugMessageCallback(debugCallback, nullptr);
+    	debugLogFile.open("GLDebug.log");
     	std::cout << "OpenGL debugging enabled" << std::endl;
     }
 
@@ -423,7 +426,8 @@ static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum
 	errorString += "- Message: ";
 	errorString += message;
 
-	std::cerr << errorString << std::endl;
+	std::cerr << errorString << '\n';
+	debugLogFile << errorString << '\n';
 
 	if(panic)
 		throw GLPanicException();
