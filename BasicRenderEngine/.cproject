@@ -60,7 +60,7 @@
 							<tool errorParsers="org.eclipse.cdt.core.GLDErrorParser" id="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug.1224363711" name="MinGW C++ Linker" superClass="cdt.managedbuild.tool.gnu.cpp.linker.mingw.exe.debug">
 								<option id="gnu.cpp.link.option.paths.759001297" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" valueType="libPaths">
 									<listOptionValue builtIn="false" value="&quot;${glfw3_library_dir}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${assimp_library}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${assimp_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${boost_system_library_dir}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${glew_library_dir}&quot;"/>
 								</option>

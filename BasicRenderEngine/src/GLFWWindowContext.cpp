@@ -5,11 +5,15 @@
  *      Author: Collin
  */
 
+#include <boost/scope_exit.hpp>
+
 #include "GLFWWindowContext.h"
 
-GLFWWindowContext::GLFWWindowContext(GLFWwindow *handle_in) noexcept
+GLFWWindowContext::GLFWWindowContext(GLFWwindow *handle_in, unsigned int major_in, unsigned int minor_in) noexcept
 {
 	handle = handle_in;
+	major = major_in;
+	minor = minor_in;
 }
 
 GLFWWindowContext::~GLFWWindowContext()

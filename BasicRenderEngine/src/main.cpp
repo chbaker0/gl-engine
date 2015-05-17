@@ -66,9 +66,13 @@ try
 
 	std::unique_ptr<GLRenderWindow> win = createWindow(argc, argv);
 	GLContext *context = win->getContext();
+
+	auto version = context->getGLVersion();
+	cout << version.first << ',' << version.second << endl;
+
 	context->setCurrent();
 	// Enable vsync (hopefully)
-	context->setSwapInterval(1);
+	//context->setSwapInterval(0);
 
 	context->srgbWriteEnabled(true);
 
@@ -386,7 +390,7 @@ try
 		cam.offsetCamera(glm::vec3((float)elapsedTime * 3.0f) * linearV);
 		if(glm::length(angularV) > 0.01f)
 		{
-			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * length(angularV) * 3.2f, angularV));
+			cam.orientCamera(glm::rotate(glm::quat(), (float)elapsedTime * length(angularV) * 0.5f, angularV));
 		}
 
 		modelBlock.modelCameraMat = cam.calcViewMatrix() * modelWorldMat;
@@ -433,6 +437,11 @@ catch(std::exception& e)
 	std::cout << e.what() << std::endl;
 	return 1;
 }
+catch(...)
+{
+	std::cout << "Unknown exception" << std::endl;
+	return 1;
+}
 }
 
 std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
@@ -454,8 +463,8 @@ std::unique_ptr<GLRenderWindow> createWindow(int argc, char **argv)
 	}
 
 	GLRenderWindowCreator creator;
-	creator.hintGLVersion(4, 2);
-	creator.hintDebug(true);
+	creator.hintGLVersion(4, 3);
+	creator.hintDebug(false);
 	creator.hintFullscreen(fullscreen);
 	creator.hintSize(x, y);
 	creator.hintTitle("Test Window");

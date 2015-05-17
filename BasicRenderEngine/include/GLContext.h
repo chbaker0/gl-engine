@@ -93,6 +93,8 @@ public:
 
     virtual unsigned int queryUniformBufferOffsetAlignment() const noexcept;
 
+    virtual std::pair<unsigned int, unsigned int> getGLVersion() const noexcept = 0;
+
     static GLContext* getCurrentContext() noexcept
 	{
     	return currentContext;

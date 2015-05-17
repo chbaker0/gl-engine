@@ -3,6 +3,8 @@
 #include <string>
 #include <utility>
 
+#include <cstdio>
+
 #include <boost/scope_exit.hpp>
 #include <boost/pool/object_pool.hpp>
 
@@ -127,6 +129,20 @@ void GLFWRenderWindow::framebufferResizeCallback(GLFWwindow *handle, int width, 
 
 static void APIENTRY debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
+static std::pair<unsigned int, unsigned int> getVersion()
+{
+	if(GLEW_VERSION_4_4)
+		return std::make_pair(4, 4);
+	else if(GLEW_VERSION_4_3)
+		return std::make_pair(4, 3);
+	else if(GLEW_VERSION_4_2)
+		return std::make_pair(4, 2);
+	else if(GLEW_VERSION_4_1)
+		return std::make_pair(4, 1);
+	else if(GLEW_VERSION_4_0)
+		return std::make_pair(4, 0);
+}
+
 GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool fullscreen,
                                    unsigned int glVersionMajor, unsigned int glVersionMinor,
                                    const char *title, bool debug, bool srgb):
@@ -221,8 +237,10 @@ GLFWRenderWindow::GLFWRenderWindow(unsigned int xSize, unsigned int ySize, bool 
     if(err != GLEW_OK)
         throw GLFWRenderWindowException((const char*)glewGetErrorString(err));
 
+    auto version = getVersion();
+
     // Create a GLFWWindowContext
-    context = new GLFWWindowContext44(handle);
+    context = new GLFWWindowContext(handle, version.first, version.second);
     // Enable debug callback if asked
     if(debug && (GLEW_VERSION_4_3 || GLEW_KHR_debug))
     {

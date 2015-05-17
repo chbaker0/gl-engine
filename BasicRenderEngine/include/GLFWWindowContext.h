@@ -8,6 +8,8 @@
 #ifndef GLFW_WINDOW_CONTEXT_H_INCLUDED
 #define	GLFW_WINDOW_CONTEXT_H_INCLUDED
 
+#include <utility>
+
 #include <GL/glew.h>
 #include <glfw/glfw3.h>
 
@@ -17,10 +19,10 @@ class GLFWWindowContext : public GLContext
 {
 protected:
 	GLFWwindow *handle;		// Not owned
+	unsigned int major, minor;
 
 public:
-	GLFWWindowContext(GLFWwindow*) noexcept;
-	GLFWWindowContext() noexcept: GLFWWindowContext(nullptr) {};
+	GLFWWindowContext(GLFWwindow *handle_in, unsigned int major_in, unsigned int minor_in) noexcept;
 	virtual ~GLFWWindowContext();
 
 	void updateHandle(GLFWwindow*) noexcept;
@@ -29,15 +31,11 @@ public:
 
 	virtual void setCurrent() override;
 	virtual void unsetCurrent() override;
-};
 
-class GLFWWindowContext44 : public GLFWWindowContext
-{
-private:
-
-public:
-	GLFWWindowContext44(GLFWwindow *handle_in) noexcept: GLFWWindowContext(handle_in) {}
-	GLFWWindowContext44() noexcept: GLFWWindowContext44(nullptr) {};
+	virtual std::pair<unsigned int, unsigned int> getGLVersion() const noexcept override
+	{
+		return std::pair<unsigned int, unsigned int>(major, minor);
+	}
 };
 
 #endif	/* GLFW_WINDOW_CONTEXT_H_INCLUDED */
