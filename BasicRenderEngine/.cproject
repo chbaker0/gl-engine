@@ -4,8 +4,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<macros>
-					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 					<stringMacro name="build_exe_dir" type="VALUE_TEXT" value="Debug"/>
+					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -32,8 +32,8 @@
 							</tool>
 							<tool id="cdt.managedbuild.tool.gnu.archiver.mingw.base.1849507282" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.mingw.base"/>
 							<tool errorParsers="org.eclipse.cdt.core.GCCErrorParser" id="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug.904283497" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.mingw.exe.debug">
-								<option id="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level.1576326291" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.most" valueType="enumerated"/>
-								<option id="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level.217254459" name="Debug Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level.1576326291" name="Optimization Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.optimization.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.optimization.level.none" valueType="enumerated"/>
+								<option id="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level.217254459" name="Debug Level" superClass="gnu.cpp.compiler.mingw.exe.debug.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.dialect.std.1239461395" name="Language standard" superClass="gnu.cpp.compiler.option.dialect.std" value="gnu.cpp.compiler.dialect.default" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.890098949" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/include}&quot;"/>
@@ -45,7 +45,7 @@
 								</option>
 								<option id="gnu.cpp.compiler.option.dialect.flags.836655640" name="Other dialect flags" superClass="gnu.cpp.compiler.option.dialect.flags" value="-std=c++11" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.debugging.gprof.1388939363" name="Generate gprof information (-pg)" superClass="gnu.cpp.compiler.option.debugging.gprof" value="false" valueType="boolean"/>
-								<option id="gnu.cpp.compiler.option.optimization.flags.1533254242" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="-flto" valueType="string"/>
+								<option id="gnu.cpp.compiler.option.optimization.flags.1533254242" name="Other optimization flags" superClass="gnu.cpp.compiler.option.optimization.flags" value="" valueType="string"/>
 								<option id="gnu.cpp.compiler.option.warnings.pedantic.785992990" name="Pedantic (-pedantic)" superClass="gnu.cpp.compiler.option.warnings.pedantic" value="true" valueType="boolean"/>
 								<option id="gnu.cpp.compiler.option.warnings.extrawarn.1143944507" name="Extra warnings (-Wextra)" superClass="gnu.cpp.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.876137247" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
@@ -72,7 +72,7 @@
 									<listOptionValue builtIn="false" value="${glfw3_library}"/>
 								</option>
 								<option id="gnu.cpp.link.option.debugging.gprof.1516304625" name="Generate gprof information (-pg)" superClass="gnu.cpp.link.option.debugging.gprof" value="false" valueType="boolean"/>
-								<option id="gnu.cpp.link.option.flags.1606272209" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-flto" valueType="string"/>
+								<option id="gnu.cpp.link.option.flags.1606272209" name="Linker flags" superClass="gnu.cpp.link.option.flags" value="-g" valueType="string"/>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.linker.input.1264224253" superClass="cdt.managedbuild.tool.gnu.cpp.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>
@@ -94,8 +94,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546" moduleId="org.eclipse.cdt.core.settings" name="Release">
 				<macros>
-					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
+					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -268,8 +268,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221" moduleId="org.eclipse.cdt.core.settings" name="FastBuild">
 				<macros>
-					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
+					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
