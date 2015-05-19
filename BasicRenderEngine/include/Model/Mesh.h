@@ -9,6 +9,7 @@
 #define MODEL_MESH_H_INCLUDED
 
 #include <memory>
+#include <utility>
 
 #include "GLContext.h"
 #include "GLVertexArrayObject.h"
@@ -34,14 +35,45 @@ private:
 	GLsizeiptr indexCount;
 
 public:
+	Mesh(): vertexData(nullptr), primType(GL_INVALID_ENUM), indexType(GL_INVALID_ENUM),
+			indexOffset(0), indexCount(0) {}
+	Mesh(const Mesh&) = delete;
+	Mesh(Mesh&& other)
+	{
+		vertexData = other.vertexData;
+		primType = other.primType;
+		indexType = other.indexType;
+		indexOffset = other.indexOffset;
+		indexCount = other.indexCount;
+		other.vertexData = nullptr;
+	}
+
 	Mesh(MeshVertexData *vaoWrapper_in,
 	     GLenum primType_in, GLenum indexType_in,
 	     GLsizeiptr indexOffset_in, GLsizeiptr indexCount_in):
 	    vertexData(vaoWrapper_in), primType(primType_in), indexType(indexType_in),
 		indexOffset(indexOffset_in), indexCount(indexCount_in) {}
+
 	~Mesh()
 	{
-		vertexData->release(indexOffset, indexCount);
+		if(vertexData != nullptr)
+			vertexData->release(indexOffset, indexCount);
+	}
+
+	Mesh& operator= (Mesh other)
+	{
+		swap(other);
+		return *this;
+	}
+
+	void swap(Mesh& other)
+	{
+		using std::swap;
+		swap(vertexData, other.vertexData);
+		swap(primType, other.primType);
+		swap(indexType, other.indexType);
+		swap(indexOffset, other.indexOffset);
+		swap(indexCount, other.indexCount);
 	}
 
 	GLsizeiptr getIndexCount() const
