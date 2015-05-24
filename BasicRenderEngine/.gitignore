@@ -11,3 +11,4 @@ RunGPUPerfStudio.bat
 /Debug profile/
 /gmon.out
 /CMakeBuild/
+/docs/

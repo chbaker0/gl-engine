@@ -21,6 +21,7 @@
 #include "GLRenderWindow.h"
 #include "GLContext.h"
 #include "GLDrawIndexedCommand.h"
+#include "GLRenderTargetView.h"
 
 #include "Camera.h"
 
