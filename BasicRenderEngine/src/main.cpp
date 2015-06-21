@@ -74,8 +74,8 @@ private:
 		context->useRenderTarget(window);
 	}
 
-	std::unique_ptr<GLDrawIndexedCommand> squareDrawCommand;
-	Mesh squareMesh;
+	std::unique_ptr<GLDrawIndexedCommand> squareDrawCommand, sphereDrawCommand;
+	Mesh squareMesh, sphereMesh;
 
 	void loadMesh()
 	{
@@ -96,6 +96,8 @@ private:
 		};
 		squareMesh = loadMeshFromMem(context, testSquareTriAttribs, squareAttribDesc, 2, 4,
 		                                  testSquareInd, GL_UNSIGNED_SHORT, 6, GL_TRIANGLES);
+
+		sphereMesh = loadMeshFromFile(context, "resources/meshes/sphere/mesh.dae");
 	}
 
 	std::unique_ptr<GLMutableBuffer> squareUniformBuffer, globalUniformBuffer;
@@ -300,6 +302,8 @@ public:
 
 		squareDrawCommand.reset(new GLDrawIndexedCommand(squareMesh.getVao(), squareMesh.getIndexCount(), squareMesh.getPrimType(),
                                                          (const void*) squareMesh.getIndexOffset(), squareMesh.getIndexType()));
+		sphereDrawCommand.reset(new GLDrawIndexedCommand(sphereMesh.getVao(), sphereMesh.getIndexCount(), sphereMesh.getPrimType(),
+                                                         (const void*) sphereMesh.getIndexOffset(), sphereMesh.getIndexType()));
 
 		window->registerListener(this);
 
@@ -361,7 +365,7 @@ public:
 			context->useExecutable(pipeline.get());
 			context->bindTexture(0, testTexture.get());
 			context->bindSampler(0, testSampler.get());
-			squareDrawCommand->draw(context);
+			sphereDrawCommand->draw(context);
 
 //			// Blit to backbuffer
 //			context->useRenderTarget(window);

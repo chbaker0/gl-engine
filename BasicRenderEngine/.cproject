@@ -4,8 +4,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.debug.152629938" moduleId="org.eclipse.cdt.core.settings" name="Debug">
 				<macros>
-					<stringMacro name="build_exe_dir" type="VALUE_TEXT" value="Debug"/>
 					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
+					<stringMacro name="build_exe_dir" type="VALUE_TEXT" value="Debug"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -94,8 +94,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546" moduleId="org.eclipse.cdt.core.settings" name="Release">
 				<macros>
-					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
 					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
+					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
 				</macros>
 				<externalSettings/>
 				<extensions>
@@ -268,8 +268,8 @@
 		<cconfiguration id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.config.gnu.mingw.exe.release.914490546.1986041221" moduleId="org.eclipse.cdt.core.settings" name="FastBuild">
 				<macros>
-					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
 					<stringMacro name="command_line" type="VALUE_TEXT" value="0 0 f"/>
+					<stringMacro name="__cplusplus" type="VALUE_TEXT" value="201103L"/>
 				</macros>
 				<externalSettings/>
 				<extensions>

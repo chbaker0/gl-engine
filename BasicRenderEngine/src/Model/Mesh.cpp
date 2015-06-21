@@ -9,7 +9,9 @@
 #include <map>
 #include <unordered_map>
 #include <memory>
+#include <string>
 #include <utility>
+#include <vector>
 #include <algorithm>
 
 #include <stdexcept>
@@ -17,6 +19,11 @@
 #include <cassert>
 #include <cstddef>
 #include <cstring>
+
+#include <assimp/Logger.hpp>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 #include "Model/Mesh.h"
 
@@ -180,4 +187,71 @@ Mesh loadMeshFromMem(GLContext *context, const void *vertexData, const MeshVerte
 			new MeshVertexDataFromMem(std::move(buffer), std::move(vao));
 
 	return Mesh(meshVertexData, primType, indexType, calculatedSize, indexCount);
+}
+
+Mesh loadMeshFromFile(GLContext *context, std::string filename)
+{
+	Assimp::Importer importer;
+	const aiScene *scene = importer.ReadFile(filename.c_str(),
+	                                         aiProcess_Triangulate
+	                                         | aiProcess_FindDegenerates
+	                                         | aiProcess_JoinIdenticalVertices
+	                                         | aiProcess_SortByPType
+	                                         | aiProcess_ImproveCacheLocality
+	                                         | aiProcess_FindInvalidData
+	                                         | aiProcess_GenSmoothNormals
+	                                         | aiProcess_OptimizeMeshes
+	                                         | aiProcess_ValidateDataStructure);
+	if(scene == nullptr)
+		throw MeshLoaderError("Assimp failed to load model file");
+
+	if(!scene->HasMeshes())
+		throw MeshLoaderError("No meshes in loaded file");
+
+	aiMesh *mesh = scene->mMeshes[0];
+
+	std::vector<MeshVertexAttribDescriptor> attribs;
+	std::vector<float> data;
+
+	attribs.emplace_back(MeshVertexAttribDescriptor{GLVertexArrayObject::Position, 4, GL_FLOAT, GL_FALSE, 0, 0});
+	for(std::size_t vIndex = 0; vIndex < mesh->mNumVertices; ++vIndex)
+	{
+		for(unsigned int i = 0; i < 3; ++i)
+			data.push_back(mesh->mVertices[vIndex][i]);
+		data.push_back(1.0f);
+	}
+	if(mesh->HasNormals())
+	{
+		attribs.emplace_back(MeshVertexAttribDescriptor{GLVertexArrayObject::Normal, 4, GL_FLOAT, GL_FALSE, 0, data.size()});
+
+		for(std::size_t nIndex = 0; nIndex < mesh->mNumVertices; ++nIndex)
+		{
+			for(unsigned int i = 0; i < 3; ++i)
+				data.push_back(mesh->mNormals[nIndex][i]);
+			data.push_back(1.0f);
+		}
+	}
+	if(mesh->HasTextureCoords(0))
+	{
+		attribs.emplace_back(MeshVertexAttribDescriptor{GLVertexArrayObject::TexCoord, 2, GL_FLOAT, GL_FALSE, 0, data.size()});
+
+		for(std::size_t tIndex = 0; tIndex < mesh->mNumUVComponents[0]; ++tIndex)
+		{
+			for(unsigned int i = 0; i < 2; ++i)
+				data.push_back(mesh->mTextureCoords[0][tIndex][i]);
+		}
+	}
+
+	std::vector<GLushort> indices;
+
+	for(std::size_t faceIndex = 0; faceIndex < mesh->mNumFaces; ++faceIndex)
+	{
+		aiFace *face = mesh->mFaces + faceIndex;
+		if(face->mNumIndices != 3)
+			continue;
+		for(unsigned int i = 0; i < 3; ++i)
+			indices.push_back(face->mIndices[i]);
+	}
+
+	return loadMeshFromMem(context, &data[0], &attribs[0], attribs.size(), mesh->mNumVertices, &indices[0], GL_UNSIGNED_SHORT, sizeof(indices), GL_TRIANGLES);
 }

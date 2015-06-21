@@ -9,6 +9,7 @@
 #define MODEL_MESH_H_INCLUDED
 
 #include <memory>
+#include <stdexcept>
 #include <utility>
 
 #include "GLContext.h"
@@ -118,11 +119,17 @@ struct MeshVertexAttribDescriptor
 	GLsizeiptr offset;
 };
 
+class MeshLoaderError : public std::runtime_error
+{
+public:
+	MeshLoaderError(const char *errorString): runtime_error(errorString) {}
+};
+
 Mesh createMeshFromExisting(GLVertexArrayObject *vao, GLenum primType, GLenum indexType, GLsizeiptr indexOffset, GLsizeiptr indexCount);
 
-Mesh loadMeshFromMem(GLContext *context, const void *vertexData, const MeshVertexAttribDescriptor *attribs, unsigned int attribCount,GLsizei vertexCount,
+Mesh loadMeshFromMem(GLContext *context, const void *vertexData, const MeshVertexAttribDescriptor *attribs, unsigned int attribCount, GLsizei vertexCount,
                      const void *indexData, GLenum indexType, GLsizei indexCount, GLenum primType);
 
-Mesh loadMeshFromFile(GLContext *context, std::string filename, std::unique_ptr<GLMappableBuffer>& buffer);
+Mesh loadMeshFromFile(GLContext *context, std::string filename);
 
 #endif /* MODEL_MESH_H_INCLUDED */
