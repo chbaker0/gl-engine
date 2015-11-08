@@ -12,3 +12,6 @@ RunGPUPerfStudio.bat
 /gmon.out
 /CMakeBuild/
 /docs/
+/.cproject
+/.project
+/.settings/
